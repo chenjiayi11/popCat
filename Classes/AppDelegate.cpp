@@ -1,6 +1,6 @@
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
 #include "AppMacros.h"
+#include "GameScene.h"
 
 USING_NS_CC;
 
@@ -27,19 +27,19 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	pEGLView->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, kResolutionNoBorder);
 #endif
 
-	if (framSize.width > smallResource.size.width)
+	if (framSize.width > designResolutionSize.width)
 	{
 		pDirector->setContentScaleFactor(highResource.size.width/designResolutionSize.width);
 	}
 	
     // turn on display FPS
-    pDirector->setDisplayStats(true);
+    pDirector->setDisplayStats(false);
 
     // set FPS. the default value is 1.0/60 if you don't call this
     pDirector->setAnimationInterval(1.0 / 60);
 
     // create a scene. it's an autorelease object
-    CCScene *pScene = HelloWorld::scene();
+	CCScene *pScene = GameLayer::createScene();
 
     // run
     pDirector->runWithScene(pScene);

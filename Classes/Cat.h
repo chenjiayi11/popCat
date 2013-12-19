@@ -17,6 +17,9 @@ class Cat : public cocos2d::CCSprite
 public:
 	static Cat* CreateWithNum(int num);
 
+	virtual void draw(void);
+
 	int catColor;
+	int status; //0 default 1 selected
 };
 #endif // !__CAT_H_

@@ -22,9 +22,11 @@ static Resource highResource = {CCSizeMake(640, 960), "high"};
 #if (TARGET_DESIGN_RESOLUTION_SIZE == DESIGN_RESOLUTION_320x480)
 static CCSize designResolutionSize = CCSizeMake(320, 480);
 static float catSize = 40;
+static int boxSize = 8;
 #elif (TARGET_DESIGN_RESOLUTION_SIZE == DESIGN_RESOLUTION_640x960)
 static CCSize designResolutionSize = CCSizeMake(640, 960);
 static float catSize = 80;
+static int boxSize = 8;
 #endif
 
 #endif

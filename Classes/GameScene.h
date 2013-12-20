@@ -3,6 +3,8 @@
 #include "cocos2d.h"
 #include "Cat.h"
 
+USING_NS_CC;
+
 #define userDefault cocos2d::CCUserDefault::sharedUserDefault()
 
 class GameLayer : public cocos2d::CCLayer
@@ -22,6 +24,8 @@ public:
 
 	void initData();
 
+	void GameLayer::popCat(Cat* cat, CCArray* array);
+
 	CREATE_FUNC(GameLayer);
 
 private:
@@ -31,8 +35,8 @@ private:
 	int level;		  //¹Ø¿¨
 
 	//CCArray* m_content;
-	Cat* **m_content;
-	
+	CCArray* m_selected;
+	Cat*** m_content;
 };
 
 #endif

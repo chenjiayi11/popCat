@@ -4,6 +4,7 @@
 #include "Cat.h"
 
 USING_NS_CC;
+using namespace std;
 
 #define userDefault cocos2d::CCUserDefault::sharedUserDefault()
 
@@ -25,6 +26,10 @@ public:
 	void initData();
 
 	void GameLayer::popCat(Cat* cat, CCArray* array);
+
+	void GameLayer::WStrToUTF8(string& dest, const wstring& src);
+
+	string GameLayer::WStrToUTF8(const wstring& str);
 
 	CREATE_FUNC(GameLayer);
 

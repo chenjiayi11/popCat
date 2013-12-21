@@ -3,6 +3,7 @@
 #include "AppMacros.h"
 
 USING_NS_CC;
+using namespace std;
 
 CCScene* GameLayer::createScene()
 {
@@ -48,12 +49,39 @@ bool GameLayer::init()
 	topNode->setAnchorPoint(ccp(0,0));
 	topNode->setPosition(ccp(0,VisibleRect::top().y-catSize));
 	this->addChild(topNode);
-	highestScoreNode = CCLabelTTF::create("最高分","Marker Felt", 34);
-	highestScoreNode->setAnchorPoint(ccp(0,0));
+
+	highestScoreNode = CCLabelTTF::create("最高分","arial", 24);
 	highestScoreNode->setColor(ccc3(255,255,255));
-	highestScoreNode->setString("highestScore");
-	highestScoreNode->setPosition(ccp(10, 40));
+	string highestStr = WStrToUTF8(L"最高分 ");
+	highestScore = 322654;
+	ostringstream os;
+	os<<highestScore;
+	highestStr = highestStr + os.str();
+	highestScoreNode->setString(highestStr.c_str());
+	highestScoreNode->setPosition(ccp(highestScoreNode->getContentSize().width/2 + 10, 55));
 	topNode->addChild(highestScoreNode);
+
+	targetScoreNode =  CCLabelTTF::create("目标分","arial", 24);
+	targetScoreNode->setColor(ccc3(255,255,255));
+	string targetStr = WStrToUTF8(L"目标分 ");
+	targetScore = 1000;
+	os.str("");
+	os<<targetScore;
+	targetStr = targetStr + os.str();
+	targetScoreNode->setString(targetStr.c_str());
+	targetScoreNode->setPosition(ccp(VisibleRect::center().x, 55));
+	topNode->addChild(targetScoreNode);
+
+	levelNode = CCLabelTTF::create("关卡","arial", 24);
+	levelNode->setColor(ccc3(128,128,255));
+	string levelStr = WStrToUTF8(L"关卡 ");
+	level = 2;
+	os.str("");
+	os<<level;
+	levelStr = levelStr + os.str();
+	levelNode->setString(levelStr.c_str());
+	levelNode->setPosition(ccp(VisibleRect::right().x*3/4,55));
+	topNode->addChild(levelNode);
 
 	this->setTouchEnabled(true);
 	initData();
@@ -162,4 +190,38 @@ void GameLayer::popCat(Cat* cat, CCArray* array)
 			popCat(m_content[ax][ay+1], array);
 		}
 	}
+}
+
+void GameLayer::WStrToUTF8(string& dest, const wstring& src)
+{
+	dest.clear();
+	for (size_t i = 0; i < src.size(); i++){
+		wchar_t w = src[i];
+		if (w <= 0x7f)
+			dest.push_back((char)w);
+		else if (w <= 0x7ff){
+			dest.push_back(0xc0 | ((w >> 6)& 0x1f));
+			dest.push_back(0x80| (w & 0x3f));
+		}
+		else if (w <= 0xffff){
+			dest.push_back(0xe0 | ((w >> 12)& 0x0f));
+			dest.push_back(0x80| ((w >> 6) & 0x3f));
+			dest.push_back(0x80| (w & 0x3f));
+		}
+		else if (sizeof(wchar_t) > 2 && w <= 0x10ffff){
+			dest.push_back(0xf0 | ((w >> 18)& 0x07)); // wchar_t 4-bytes situation
+			dest.push_back(0x80| ((w >> 12) & 0x3f));
+			dest.push_back(0x80| ((w >> 6) & 0x3f));
+			dest.push_back(0x80| (w & 0x3f));
+		}
+		else
+			dest.push_back('?');
+	}
+}
+//! simple warpper
+string GameLayer::WStrToUTF8(const wstring& str)
+{
+	string result;
+	WStrToUTF8(result, str);
+	return result;
 }

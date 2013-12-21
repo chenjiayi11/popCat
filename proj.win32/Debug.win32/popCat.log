@@ -1,29 +1,28 @@
-﻿Build started 2013/12/20 19:03:21.
-     1>Project "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\popCat.vcxproj" on node 2 (Build target(s)).
+﻿Build started 2013/12/21 14:08:25.
+     1>Project "C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\popCat.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         D:\programfile\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\include" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\kazmath\include" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\platform\win32" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\platform\third_party\win32" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\platform\third_party\win32\OGLES" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\external" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\external\chipmunk\include\chipmunk" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\CocosDenshion\include" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\extensions" /I..\Classes /I.. /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USE_MATH_DEFINES /D GL_GLEXT_PROTOTYPES /D CC_ENABLE_CHIPMUNK_INTEGRATION=1 /D COCOS2D_DEBUG=1 /D _CRT_SECURE_NO_WARNINGS /D _SCL_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug.win32\\" /Fd"Debug.win32\vc110.pdb" /Gd /TP /wd4267 /wd4251 /wd4244 /analyze- /errorReport:prompt ..\Classes\GameScene.cpp
-         GameScene.cpp
-     1>cl : Command line warning D9028: minimal rebuild failure, reverting to normal build
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\..\..\..\cocos2dx" /I"C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\..\..\..\cocos2dx\include" /I"C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\..\..\..\cocos2dx\kazmath\include" /I"C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\..\..\..\cocos2dx\platform\win32" /I"C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\..\..\..\cocos2dx\platform\third_party\win32" /I"C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\..\..\..\cocos2dx\platform\third_party\win32\OGLES" /I"C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\..\..\..\external" /I"C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\..\..\..\external\chipmunk\include\chipmunk" /I"C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\..\..\..\CocosDenshion\include" /I"C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\..\..\..\extensions" /I..\Classes /I.. /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USE_MATH_DEFINES /D GL_GLEXT_PROTOTYPES /D CC_ENABLE_CHIPMUNK_INTEGRATION=1 /D COCOS2D_DEBUG=1 /D _CRT_SECURE_NO_WARNINGS /D _SCL_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug.win32\\" /Fd"Debug.win32\vc110.pdb" /Gd /TP /wd4267 /wd4251 /wd4244 /analyze- /errorReport:prompt main.cpp
+         main.cpp
        PreLinkEvent:
-         if not exist "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\" mkdir "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\"
-         xcopy /Y /Q "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\external\libwebsockets\win32\lib\*.*" "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\"
+         if not exist "C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\Debug.win32\" mkdir "C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\Debug.win32\"
+         xcopy /Y /Q "C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\..\..\..\external\libwebsockets\win32\lib\*.*" "C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\Debug.win32\"
          :VCEnd
          复制了 2 个文件
        Link:
-         D:\programfile\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\popCat.exe" /INCREMENTAL /NOLOGO /LIBPATH:"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\\" libExtensions.lib libcocos2d.lib libCocosDenshion.lib opengl32.lib glew32.lib libBox2d.lib libchipmunk.lib libcurl_imp.lib pthreadVCE2.lib websockets.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\popCat.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\popCat.lib" /MACHINE:X86 /SAFESEH Debug.win32\AppDelegate.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\Debug.win32\popCat.exe" /INCREMENTAL /NOLOGO /LIBPATH:"C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\Debug.win32\\" libExtensions.lib libcocos2d.lib libCocosDenshion.lib opengl32.lib glew32.lib libBox2d.lib libchipmunk.lib libcurl_imp.lib pthreadVCE2.lib websockets.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\Debug.win32\popCat.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\Debug.win32\popCat.lib" /MACHINE:X86 /SAFESEH Debug.win32\AppDelegate.obj
          Debug.win32\Cat.obj
          Debug.win32\GameScene.obj
          Debug.win32\HelloWorldScene.obj
          Debug.win32\VisibleRect.obj
          Debug.win32\main.obj
-         "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\libcocos2d.lib"
-         "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\libCocosDenshion.lib"
-         "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\libExtensions.lib"
-         "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\libBox2D.lib"
-         "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\libchipmunk.lib"
-         popCat.vcxproj -> D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\popCat.exe
-     1>Done Building Project "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\popCat.vcxproj" (Build target(s)).
+         "C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\Debug.win32\libcocos2d.lib"
+         "C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\Debug.win32\libCocosDenshion.lib"
+         "C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\Debug.win32\libExtensions.lib"
+         "C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\Debug.win32\libBox2D.lib"
+         "C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\Debug.win32\libchipmunk.lib"
+         popCat.vcxproj -> C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\Debug.win32\popCat.exe
+     1>Done Building Project "C:\Users\park\cocos2d-x-2.2.1\projects\popCat\proj.win32\popCat.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:03.13
+Time Elapsed 00:00:03.26

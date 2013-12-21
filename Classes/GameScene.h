@@ -29,6 +29,12 @@ public:
 	CREATE_FUNC(GameLayer);
 
 private:
+
+	CCLabelTTF* highestScoreNode;
+	CCLabelTTF* targetScoreNode;
+	CCLabelTTF* levelNode;
+	CCLabelTTF* currentScoreNode;
+
 	int highestScore; //最高分
 	int currentScore; //当前分
 	int targetScore;  //目标分

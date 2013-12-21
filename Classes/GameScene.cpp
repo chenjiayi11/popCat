@@ -42,6 +42,19 @@ bool GameLayer::init()
 
 	this->addChild(bg, -1);
 
+	//添加头顶的分数栏
+	CCNode* topNode = CCLayerColor::create(ccc4(0,0,0,88));
+	topNode->setContentSize(CCSizeMake(VisibleRect::right().x, catSize));
+	topNode->setAnchorPoint(ccp(0,0));
+	topNode->setPosition(ccp(0,VisibleRect::top().y-catSize));
+	this->addChild(topNode);
+	highestScoreNode = CCLabelTTF::create("最高分","Marker Felt", 34);
+	highestScoreNode->setAnchorPoint(ccp(0,0));
+	highestScoreNode->setColor(ccc3(255,255,255));
+	highestScoreNode->setString("highestScore");
+	highestScoreNode->setPosition(ccp(10, 40));
+	topNode->addChild(highestScoreNode);
+
 	this->setTouchEnabled(true);
 	initData();
 
@@ -65,7 +78,7 @@ void GameLayer::initData()
 			m_content[x][y]->setAnchorPoint(ccp(0,0));
 			m_content[x][y]->setPosition(ccp(x*catSize, VisibleRect::top().y + y*catSize));
 			this->addChild(m_content[x][y]);
-			CCActionInterval* actionTo = CCMoveTo::create(1+y*0.13, ccp(x*catSize, y*catSize));
+			CCActionInterval* actionTo = CCMoveTo::create(0.8+y*0.06, ccp(x*catSize, y*catSize));
 			m_content[x][y]->runAction(actionTo);
 		}
 	}

@@ -18,6 +18,7 @@ typedef struct tagResources
 
 static Resource smallResource = {CCSizeMake(320, 480), "small"};
 static Resource highResource = {CCSizeMake(640, 960), "high"};
+static int levelScore[] = {600,1800,3000,4200,6000,8000,10000};
 
 #if (TARGET_DESIGN_RESOLUTION_SIZE == DESIGN_RESOLUTION_320x480)
 static CCSize designResolutionSize = CCSizeMake(320, 480);

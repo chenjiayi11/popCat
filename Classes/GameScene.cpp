@@ -64,7 +64,7 @@ bool GameLayer::init()
 	targetScoreNode =  CCLabelTTF::create("目标分","arial", 24);
 	targetScoreNode->setColor(ccc3(255,255,255));
 	string targetStr = WStrToUTF8(L"目标分 ");
-	targetScore = 1000;
+	targetScore = levelScore[6];
 	os.str("");
 	os<<targetScore;
 	targetStr = targetStr + os.str();

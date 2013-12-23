@@ -25,6 +25,8 @@ public:
 
 	void initData();
 
+	void GameLayer::initFinished(float dt);
+
 	void GameLayer::popCat(Cat* cat, CCArray* array);
 
 	void GameLayer::WStrToUTF8(string& dest, const wstring& src);

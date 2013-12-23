@@ -64,7 +64,7 @@ bool GameLayer::init()
 	targetScoreNode =  CCLabelTTF::create("目标分","arial", 24);
 	targetScoreNode->setColor(ccc3(255,255,255));
 	string targetStr = WStrToUTF8(L"目标分 ");
-	targetScore = levelScore[6];
+	targetScore = levelScore[1];
 	os.str("");
 	os<<targetScore;
 	targetStr = targetStr + os.str();
@@ -83,22 +83,22 @@ bool GameLayer::init()
 	levelNode->setPosition(ccp(VisibleRect::right().x*3/4,55));
 	topNode->addChild(levelNode);
 
-	this->setTouchEnabled(true);
 	initData();
+	this->schedule(schedule_selector(GameLayer::initFinished), 1.3f);
 
 	return true;
 }
 
 void GameLayer::initData()
 {
-	m_content = new Cat**[8];
-	for(int i=0; i<8; i++)
+	m_content = new Cat**[boxSize];
+	for(int i=0; i<boxSize; i++)
 	{
-		m_content[i] = new Cat*[8];
+		m_content[i] = new Cat*[boxSize];
 	}
-	for(int y=0; y <8; y++)
+	for(int y=0; y <boxSize; y++)
 	{
-		for(int x=0; x<8; x++)
+		for(int x=0; x<boxSize; x++)
 		{
 			int random = (int)(CCRANDOM_0_1() * 100)%6;
 			m_content[x][y] = Cat::CreateWithNum(random);
@@ -108,8 +108,24 @@ void GameLayer::initData()
 			this->addChild(m_content[x][y]);
 			CCActionInterval* actionTo = CCMoveTo::create(0.8+y*0.06, ccp(x*catSize, y*catSize));
 			m_content[x][y]->runAction(actionTo);
+			/*if(x<boxSize-1 || y<boxSize-1)
+			{
+				m_content[x][y]->runAction(actionTo);
+			}else
+			{
+				m_content[x][y]->runAction(CCSequence::create(actionTo, 
+					CCCallFuncN::create(this, callfuncN_selector(GameLayer::initFinished)),
+					NULL));
+			}*/
+			
 		}
 	}
+}
+
+void GameLayer::initFinished(float dt)
+{
+	this->setTouchEnabled(true);
+	this->unschedule(schedule_selector(GameLayer::initFinished));
 }
 
 void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
@@ -118,29 +134,55 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 	CCSetIterator it = pTouches->begin();
 	CCTouch* touch = (CCTouch*)(*it);
 	CCPoint location = touch->getLocation();
-	if(location.y <= 8*catSize)
+	if(location.y <= boxSize*catSize)
 	{
+		int tx = location.x/catSize;
+		int ty = location.y/catSize;
+		if(m_content[tx][ty] == NULL)
+		{
+			return;
+		}
+
 		//消除上次选中的效果
 		if(m_selected != NULL)
 		{
-			CCObject* pObj;
-			CCARRAY_FOREACH(m_selected, pObj)
+			if(m_selected->containsObject(m_content[tx][ty]))
 			{
-				Cat* tempCat = (Cat*)pObj;
-				tempCat->status = 0;
+				//TODO 消除
+			}else
+			{
+				CCObject* pObj;
+				CCARRAY_FOREACH(m_selected, pObj)
+				{
+					Cat* tempCat = (Cat*)pObj;
+					tempCat->status = 0;
+				}
+				m_selected->release();
+				m_selected = NULL;
 			}
-			m_selected->release();
-			m_selected = NULL;
+			
 		}
-
-		int tx = location.x/catSize;
-		int ty = location.y/catSize;
+		
 		if(m_content[tx][ty] != NULL)
 		{
 			CCArray* array = CCArray::create();
 			popCat(m_content[tx][ty], array);
 
 			m_selected = (CCArray*)array->copy();
+			if(m_selected->count() > 1)
+			{
+				CCObject* pObj;
+				CCARRAY_FOREACH(m_selected, pObj)
+				{
+					Cat* tempCat = (Cat*)pObj;
+					tempCat->status = 1;
+					//播放选中音效
+				}
+			}else
+			{
+				m_selected->release();
+				m_selected = NULL;
+			}
 		}
 		
 	}
@@ -157,7 +199,6 @@ void GameLayer::ccTouchesEnded(CCSet *pTouches, CCEvent *pEvent)
 
 void GameLayer::popCat(Cat* cat, CCArray* array)
 {
-	cat->status = 1;
 	array->addObject(cat);
 	int ax = cat->x;
 	int ay = cat->y;

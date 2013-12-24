@@ -33,6 +33,10 @@ public:
 
 	string GameLayer::WStrToUTF8(const wstring& str);
 
+	void GameLayer::updateContent();
+
+	void GameLayer::updateViewByContent();
+
 	CREATE_FUNC(GameLayer);
 
 private:

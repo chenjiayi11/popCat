@@ -143,14 +143,24 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 			return;
 		}
 
-		//消除上次选中的效果
 		if(m_selected != NULL)
 		{
 			if(m_selected->containsObject(m_content[tx][ty]))
 			{
 				//TODO 消除
+				CCObject* obj;
+				CCARRAY_FOREACH(m_selected, obj)
+				{
+					Cat* tempCat = (Cat*)obj;
+					m_content[tempCat->x][tempCat->y] = NULL;
+					tempCat->status = 2;
+					tempCat->removeFromParentAndCleanup(true);
+				}
+				updateContent();
+				return;
 			}else
 			{
+				//消除上次选中的效果
 				CCObject* pObj;
 				CCARRAY_FOREACH(m_selected, pObj)
 				{
@@ -265,4 +275,20 @@ string GameLayer::WStrToUTF8(const wstring& str)
 	string result;
 	WStrToUTF8(result, str);
 	return result;
+}
+
+void GameLayer::updateContent()
+{
+	for(int y=0; y<boxSize; y++)
+	{
+		for(int x=0; x<boxSize; x++)
+		{
+
+		}
+	}
+}
+
+void GameLayer::updateViewByContent()
+{
+
 }

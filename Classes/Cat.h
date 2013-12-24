@@ -24,7 +24,7 @@ public:
 	virtual void draw(void);
 
 	int catColor;
-	int status; //0 default 1 selected
+	int status; //0 default 1 selected 2 would be delete
 	int x;
 	int y;
 };

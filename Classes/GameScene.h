@@ -37,6 +37,8 @@ public:
 
 	void updateViewByContent();
 
+	void stepForScore(float dt);
+
 	int getScoreByNum(int num);
 
 	CREATE_FUNC(GameLayer);
@@ -47,11 +49,14 @@ private:
 	CCLabelTTF* targetScoreNode;
 	CCLabelTTF* levelNode;
 	CCLabelTTF* currentScoreNode;
+	CCLabelTTF* hintScoreNode;
 
 	int highestScore; //最高分
 	int currentScore; //当前分
 	int targetScore;  //目标分
 	int level;		  //关卡
+	int m_times;
+	int justScore;
 
 	//CCArray* m_content;
 	CCArray* m_selected;

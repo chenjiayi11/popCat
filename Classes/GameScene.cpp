@@ -52,6 +52,13 @@ bool GameLayer::init()
 
 	this->addChild(bg, -1);
 
+	m_times = 0;
+	highestScore = 322654;
+	level = 1;
+	targetScore = levelScore[level-1];
+	currentScore = 0;
+	justScore = 0;
+
 	//top label
 	CCNode* topNode = CCLayerColor::create(ccc4(0,0,0,88));
 	topNode->setContentSize(CCSizeMake(VisibleRect::right().x, catSize));
@@ -62,7 +69,6 @@ bool GameLayer::init()
 	highestScoreNode = CCLabelTTF::create("最高分","arial", 24);
 	highestScoreNode->setColor(ccc3(255,255,255));
 	string highestStr = WStrToUTF8(L"最高分 ");
-	highestScore = 322654;
 	ostringstream os;
 	os<<highestScore;
 	highestStr = highestStr + os.str();
@@ -73,8 +79,6 @@ bool GameLayer::init()
 	targetScoreNode = CCLabelTTF::create("目标分","arial", 24);
 	targetScoreNode->setColor(ccc3(255,255,255));
 	string targetStr = WStrToUTF8(L"目标分 ");
-	level = 1;
-	targetScore = levelScore[level-1];
 	os.str("");
 	os<<targetScore;
 	targetStr = targetStr + os.str();
@@ -85,7 +89,6 @@ bool GameLayer::init()
 	levelNode = CCLabelTTF::create("关卡","arial", 24);
 	levelNode->setColor(ccc3(128,128,255));
 	string levelStr = WStrToUTF8(L"关卡 ");
-	level = 1;
 	os.str("");
 	os<<level;
 	levelStr = levelStr + os.str();
@@ -97,10 +100,18 @@ bool GameLayer::init()
 	currentScoreNode->setColor(ccc3(255,255,255));
 	currentScoreNode->setFontName("arial");
 	currentScoreNode->setFontSize(26);
-	currentScore = 0;
 	currentScoreNode->setString("0");
 	currentScoreNode->setPosition(ccp(VisibleRect::center().x, currentScoreNode->getContentSize().height/2));
 	topNode->addChild(currentScoreNode);
+
+	hintScoreNode = CCLabelTTF::create();
+	hintScoreNode->setColor(ccc3(255,255,255));
+	hintScoreNode->setFontName("arial");
+	hintScoreNode->setFontSize(20);
+	hintScoreNode->setString("n blocks 5*n*n points");
+	hintScoreNode->setPosition(ccp(VisibleRect::center().x, VisibleRect::top().y - 120));
+	this->addChild(hintScoreNode);
+	hintScoreNode->setVisible(false);
 
 	initData();
 	this->schedule(schedule_selector(GameLayer::initFinished), 1.3f);
@@ -116,7 +127,7 @@ void GameLayer::initData()
 		m_content[i] = CCArray::createWithCapacity(boxSize);
 		for(int j=0; j<boxSize; j++)
 		{
-			int random = (int)(CCRANDOM_0_1() * 100)%6;
+			int random = (int)(CCRANDOM_0_1() * 100)%5;
 			Cat* cat = Cat::CreateWithNum(random);
 			cat->setXandY(i,j);
 			cat->setAnchorPoint(ccp(0,0));
@@ -172,6 +183,7 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 				updateViewByContent();
 				m_selected->release();
 				m_selected = NULL;
+				hintScoreNode->setVisible(false);
 				return;
 			}else
 			{
@@ -200,12 +212,24 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 				{
 					Cat* tempCat = (Cat*)pObj;
 					tempCat->status = 1;
-					//选中音效
 				}
+
+				//选中音效
+
+				int n = m_selected->count();
+				char string[50] = {0};
+				sprintf(string, "%d blocks %d points", n, getScoreByNum(n));
+				hintScoreNode->setString(string);
+				hintScoreNode->setScale(0.5f);
+				CCActionInterval* scale = CCScaleTo::create(0.4f, 1.5f);
+				CCActionInterval* scale_ease_out = CCEaseElasticOut::create(((CCActionInterval*)scale->copy()->autorelease()));
+				hintScoreNode->setVisible(true);
+				hintScoreNode->runAction(scale_ease_out);
 			}else
 			{
 				m_selected->release();
 				m_selected = NULL;
+				hintScoreNode->setVisible(false);
 			}
 		}
 		
@@ -298,6 +322,7 @@ string GameLayer::WStrToUTF8(const wstring& str)
 
 void GameLayer::updateContent()
 {
+	justScore = currentScore;
 	currentScore = currentScore + getScoreByNum(m_selected->count());
 
 	CCArray* tempArray = CCArray::create();
@@ -333,9 +358,16 @@ void GameLayer::updateContent()
 
 void GameLayer::updateViewByContent()
 {
-	stringstream ss;
-	ss<<currentScore;
-	currentScoreNode->setString(ss.str().c_str());
+	if(m_times == 0)
+	{
+		schedule(schedule_selector(GameLayer::stepForScore));
+	}else
+	{
+		m_times = 0;
+		unschedule(schedule_selector(GameLayer::stepForScore));
+		schedule(schedule_selector(GameLayer::stepForScore));
+	}
+	
 	for(int i=0; i<boxSize; i++)
 	{
 		if(m_content[i] != NULL)
@@ -360,4 +392,19 @@ void GameLayer::updateViewByContent()
 int GameLayer::getScoreByNum(int num)
 {
 	return 5 * num*num;
+}
+
+void GameLayer::stepForScore(float dt)
+{
+	int score = justScore + (currentScore - justScore) * m_times/60;
+	char string[12] = {0};
+	sprintf(string, "%d", score);
+	currentScoreNode->setString(string);
+	if(m_times == 60)
+	{
+		unschedule(schedule_selector(GameLayer::stepForScore));
+		m_times = 0;
+		return;
+	}
+	m_times++;
 }

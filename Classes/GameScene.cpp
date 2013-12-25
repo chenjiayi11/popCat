@@ -1,8 +1,7 @@
-#include "GameScene.h"
+Ôªø#include "GameScene.h"
 #include "VisibleRect.h"
 #include "AppMacros.h"
 
-USING_NS_CC;
 using namespace std;
 
 CCScene* GameLayer::createScene()
@@ -23,6 +22,16 @@ GameLayer::GameLayer()
 
 GameLayer::~GameLayer()
 {
+	if(m_content != NULL)
+	{
+		for(int i=0; i<boxSize; i++)
+		{
+			if(m_content[i] != NULL)
+			{
+				m_content[i]->release();
+			}
+		}
+	}
 	delete m_content;
 	m_content = NULL;
 	if(m_selected != NULL)
@@ -43,16 +52,16 @@ bool GameLayer::init()
 
 	this->addChild(bg, -1);
 
-	//ÃÌº”Õ∑∂•µƒ∑÷ ˝¿∏
+	//top label
 	CCNode* topNode = CCLayerColor::create(ccc4(0,0,0,88));
 	topNode->setContentSize(CCSizeMake(VisibleRect::right().x, catSize));
 	topNode->setAnchorPoint(ccp(0,0));
 	topNode->setPosition(ccp(0,VisibleRect::top().y-catSize));
 	this->addChild(topNode);
 
-	highestScoreNode = CCLabelTTF::create("◊Ó∏ﬂ∑÷","arial", 24);
+	highestScoreNode = CCLabelTTF::create("ÊúÄÈ´òÂàÜ","arial", 24);
 	highestScoreNode->setColor(ccc3(255,255,255));
-	string highestStr = WStrToUTF8(L"◊Ó∏ﬂ∑÷ ");
+	string highestStr = WStrToUTF8(L"ÊúÄÈ´òÂàÜ ");
 	highestScore = 322654;
 	ostringstream os;
 	os<<highestScore;
@@ -61,10 +70,11 @@ bool GameLayer::init()
 	highestScoreNode->setPosition(ccp(highestScoreNode->getContentSize().width/2 + 10, 55));
 	topNode->addChild(highestScoreNode);
 
-	targetScoreNode =  CCLabelTTF::create("ƒø±Í∑÷","arial", 24);
+	targetScoreNode = CCLabelTTF::create("ÁõÆÊ†áÂàÜ","arial", 24);
 	targetScoreNode->setColor(ccc3(255,255,255));
-	string targetStr = WStrToUTF8(L"ƒø±Í∑÷ ");
-	targetScore = levelScore[1];
+	string targetStr = WStrToUTF8(L"ÁõÆÊ†áÂàÜ ");
+	level = 1;
+	targetScore = levelScore[level-1];
 	os.str("");
 	os<<targetScore;
 	targetStr = targetStr + os.str();
@@ -72,16 +82,25 @@ bool GameLayer::init()
 	targetScoreNode->setPosition(ccp(VisibleRect::center().x, 55));
 	topNode->addChild(targetScoreNode);
 
-	levelNode = CCLabelTTF::create("πÿø®","arial", 24);
+	levelNode = CCLabelTTF::create("ÂÖ≥Âç°","arial", 24);
 	levelNode->setColor(ccc3(128,128,255));
-	string levelStr = WStrToUTF8(L"πÿø® ");
-	level = 2;
+	string levelStr = WStrToUTF8(L"ÂÖ≥Âç° ");
+	level = 1;
 	os.str("");
 	os<<level;
 	levelStr = levelStr + os.str();
 	levelNode->setString(levelStr.c_str());
 	levelNode->setPosition(ccp(VisibleRect::right().x*3/4,55));
 	topNode->addChild(levelNode);
+
+	currentScoreNode = CCLabelTTF::create();
+	currentScoreNode->setColor(ccc3(255,255,255));
+	currentScoreNode->setFontName("arial");
+	currentScoreNode->setFontSize(26);
+	currentScore = 0;
+	currentScoreNode->setString("0");
+	currentScoreNode->setPosition(ccp(VisibleRect::center().x, currentScoreNode->getContentSize().height/2));
+	topNode->addChild(currentScoreNode);
 
 	initData();
 	this->schedule(schedule_selector(GameLayer::initFinished), 1.3f);
@@ -91,35 +110,26 @@ bool GameLayer::init()
 
 void GameLayer::initData()
 {
-	m_content = new Cat**[boxSize];
+	m_content = new CCArray*[boxSize];
 	for(int i=0; i<boxSize; i++)
 	{
-		m_content[i] = new Cat*[boxSize];
-	}
-	for(int y=0; y <boxSize; y++)
-	{
-		for(int x=0; x<boxSize; x++)
+		m_content[i] = CCArray::createWithCapacity(boxSize);
+		for(int j=0; j<boxSize; j++)
 		{
 			int random = (int)(CCRANDOM_0_1() * 100)%6;
-			m_content[x][y] = Cat::CreateWithNum(random);
-			m_content[x][y]->setXandY(x, y);
-			m_content[x][y]->setAnchorPoint(ccp(0,0));
-			m_content[x][y]->setPosition(ccp(x*catSize, VisibleRect::top().y + y*catSize));
-			this->addChild(m_content[x][y]);
-			CCActionInterval* actionTo = CCMoveTo::create(0.8+y*0.06, ccp(x*catSize, y*catSize));
-			m_content[x][y]->runAction(actionTo);
-			/*if(x<boxSize-1 || y<boxSize-1)
-			{
-				m_content[x][y]->runAction(actionTo);
-			}else
-			{
-				m_content[x][y]->runAction(CCSequence::create(actionTo, 
-					CCCallFuncN::create(this, callfuncN_selector(GameLayer::initFinished)),
-					NULL));
-			}*/
-			
+			Cat* cat = Cat::CreateWithNum(random);
+			cat->setXandY(i,j);
+			cat->setAnchorPoint(ccp(0,0));
+			cat->setPosition(ccp(i*catSize, VisibleRect::top().y + j*catSize));
+			this->addChild(cat);
+			CCActionInterval* actionTo = CCMoveTo::create(0.8+0.06*j, ccp(i*catSize, j*catSize));
+			m_content[i]->addObject(cat);
+			cat->runAction(actionTo);
 		}
+		m_content[i]->retain();
+		
 	}
+
 }
 
 void GameLayer::initFinished(float dt)
@@ -138,29 +148,33 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 	{
 		int tx = location.x/catSize;
 		int ty = location.y/catSize;
-		if(m_content[tx][ty] == NULL)
+		int temp = m_content[tx]->count();
+		if(ty >= m_content[tx]->count())
 		{
 			return;
 		}
 
 		if(m_selected != NULL)
 		{
-			if(m_selected->containsObject(m_content[tx][ty]))
+			if(m_selected->containsObject(m_content[tx]->objectAtIndex(ty)))
 			{
-				//TODO œ˚≥˝
+				// Ê∂àÈô§
 				CCObject* obj;
 				CCARRAY_FOREACH(m_selected, obj)
 				{
 					Cat* tempCat = (Cat*)obj;
-					m_content[tempCat->x][tempCat->y] = NULL;
+					m_content[tempCat->x]->removeObject(tempCat);
 					tempCat->status = 2;
 					tempCat->removeFromParentAndCleanup(true);
+					//TODO Á≤íÂ≠êÊïàÊûú Â£∞Èü≥
 				}
 				updateContent();
+				updateViewByContent();
+				m_selected->release();
+				m_selected = NULL;
 				return;
 			}else
 			{
-				//œ˚≥˝…œ¥Œ—°÷–µƒ–ßπ˚
 				CCObject* pObj;
 				CCARRAY_FOREACH(m_selected, pObj)
 				{
@@ -173,10 +187,10 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 			
 		}
 		
-		if(m_content[tx][ty] != NULL)
+		if(ty < m_content[tx]->count())
 		{
 			CCArray* array = CCArray::create();
-			popCat(m_content[tx][ty], array);
+			popCat(m_content[tx]->objectAtIndex(ty), array);
 
 			m_selected = (CCArray*)array->copy();
 			if(m_selected->count() > 1)
@@ -186,7 +200,7 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 				{
 					Cat* tempCat = (Cat*)pObj;
 					tempCat->status = 1;
-					//≤•∑≈—°÷–“Ù–ß
+					//ÈÄâ‰∏≠Èü≥Êïà
 				}
 			}else
 			{
@@ -207,38 +221,43 @@ void GameLayer::ccTouchesEnded(CCSet *pTouches, CCEvent *pEvent)
 {
 }
 
-void GameLayer::popCat(Cat* cat, CCArray* array)
+void GameLayer::popCat(CCObject* object, CCArray* array)
 {
-	array->addObject(cat);
+	array->addObject(object);
+	Cat* cat = (Cat*)object;
 	int ax = cat->x;
 	int ay = cat->y;
 
-	if(ax > 0 && m_content[ax-1][ay] != NULL && m_content[ax-1][ay]->catColor == cat->catColor)
+	if(ax > 0 && ay < m_content[ax-1]->count() 
+		&& ((Cat*)m_content[ax-1]->objectAtIndex(ay))->catColor == cat->catColor)
 	{
-		if(array->indexOfObject(m_content[ax-1][ay]) == CC_INVALID_INDEX)
+		if(!array->containsObject(m_content[ax-1]->objectAtIndex(ay)))
 		{
-			popCat(m_content[ax-1][ay], array);
+			popCat(m_content[ax-1]->objectAtIndex(ay), array);
 		}
 	}
-	if(ax < boxSize-1 && m_content[ax+1][ay] != NULL && m_content[ax+1][ay]->catColor == cat->catColor)
+	if(ax < boxSize-1 && ay < m_content[ax+1]->count()
+		&& ((Cat*)m_content[ax+1]->objectAtIndex(ay))->catColor == cat->catColor)
 	{
-		if(array->indexOfObject(m_content[ax+1][ay]) == CC_INVALID_INDEX)
+		if(!array->containsObject(m_content[ax+1]->objectAtIndex(ay)))
 		{
-			popCat(m_content[ax+1][ay], array);
+			popCat(m_content[ax+1]->objectAtIndex(ay), array);
 		}
 	}
-	if(ay > 0 && m_content[ax][ay-1] != NULL && m_content[ax][ay-1]->catColor == cat->catColor)
+	if(ay > 0 && ay-1 < m_content[ax]->count()
+		&& ((Cat*)m_content[ax]->objectAtIndex(ay-1))->catColor == cat->catColor)
 	{
-		if(array->indexOfObject(m_content[ax][ay-1]) == CC_INVALID_INDEX)
+		if(!array->containsObject(m_content[ax]->objectAtIndex(ay-1)))
 		{
-			popCat(m_content[ax][ay-1], array);
+			popCat(m_content[ax]->objectAtIndex(ay-1), array);
 		}
 	}
-	if(ay < boxSize-1 && m_content[ax][ay+1] != NULL && m_content[ax][ay+1]->catColor == cat->catColor)
+	if(ay < boxSize-1 && ay+1 < m_content[ax]->count()
+		&& ((Cat*)m_content[ax]->objectAtIndex(ay+1))->catColor == cat->catColor)
 	{
-		if(array->indexOfObject(m_content[ax][ay+1]) == CC_INVALID_INDEX)
+		if(!array->containsObject(m_content[ax]->objectAtIndex(ay+1)))
 		{
-			popCat(m_content[ax][ay+1], array);
+			popCat(m_content[ax]->objectAtIndex(ay+1), array);
 		}
 	}
 }
@@ -279,16 +298,66 @@ string GameLayer::WStrToUTF8(const wstring& str)
 
 void GameLayer::updateContent()
 {
-	for(int y=0; y<boxSize; y++)
-	{
-		for(int x=0; x<boxSize; x++)
-		{
+	currentScore = currentScore + getScoreByNum(m_selected->count());
 
+	CCArray* tempArray = CCArray::create();
+
+	for(int i=0; i<boxSize; i++)
+	{
+		if(m_content[i]->count() > 0)
+		{
+			tempArray->addObject(m_content[i]);
+		}
+	}
+
+	if(tempArray->count() < boxSize)
+	{
+		for(int j=0; j<boxSize; j++)
+		{
+			if(m_content[j]->count() == 0)
+			{
+				m_content[j]->release();
+			}
+
+			if(j < tempArray->count())
+			{
+				m_content[j] = (CCArray*)tempArray->objectAtIndex(j);
+			}else
+			{
+				m_content[j] = CCArray::create();
+				m_content[j]->retain();
+			}	
 		}
 	}
 }
 
 void GameLayer::updateViewByContent()
 {
+	stringstream ss;
+	ss<<currentScore;
+	currentScoreNode->setString(ss.str().c_str());
+	for(int i=0; i<boxSize; i++)
+	{
+		if(m_content[i] != NULL)
+		{
+			CCObject* obj;
+			int j=0;
+			CCARRAY_FOREACH(m_content[i], obj)
+			{
+				Cat* tempCat = (Cat*)obj;
+				if(tempCat->y!=j || tempCat->x != i)
+				{
+					tempCat->setXandY(i,j);
+					CCActionInterval* actionTo = CCMoveTo::create(0.3, ccp(i*catSize, j*catSize));
+					tempCat->runAction(actionTo);
+				}
+				j++;
+			}
+		}
+	}
+}
 
+int GameLayer::getScoreByNum(int num)
+{
+	return 5 * num*num;
 }

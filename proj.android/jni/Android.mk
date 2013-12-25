@@ -2,13 +2,15 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := cocos2dcpp_shared
+LOCAL_MODULE := popCat_shared
 
-LOCAL_MODULE_FILENAME := libcocos2dcpp
+LOCAL_MODULE_FILENAME := libpopCat
 
 LOCAL_SRC_FILES := hellocpp/main.cpp \
                    ../../Classes/AppDelegate.cpp \
-                   ../../Classes/HelloWorldScene.cpp
+                   ../../Classes/Cat.cpp \
+                   ../../Classes/GameScene.cpp \
+                   ../../Classes/VisibleRect.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../Classes
 

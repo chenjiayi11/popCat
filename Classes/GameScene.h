@@ -6,36 +6,38 @@
 USING_NS_CC;
 using namespace std;
 
-#define userDefault cocos2d::CCUserDefault::sharedUserDefault()
+#define userDefault CCUserDefault::sharedUserDefault()
 
-class GameLayer : public cocos2d::CCLayer
+class GameLayer : public CCLayer
 {
 public:
 	virtual bool init();
 	GameLayer();
 	~GameLayer();
 
-	static cocos2d::CCScene* createScene();
+	static CCScene* createScene();
 
-	virtual void ccTouchesBegan(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
+	virtual void ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent);
 
-	virtual void ccTouchesMoved(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
+	virtual void ccTouchesMoved(CCSet *pTouches, CCEvent *pEvent);
 
-	virtual void ccTouchesEnded(cocos2d::CCSet *pTouches, cocos2d::CCEvent *pEvent);
+	virtual void ccTouchesEnded(CCSet *pTouches, CCEvent *pEvent);
 
 	void initData();
 
-	void GameLayer::initFinished(float dt);
+	void initFinished(float dt);
 
-	void GameLayer::popCat(Cat* cat, CCArray* array);
+	void popCat(CCObject* object, CCArray* array);
 
-	void GameLayer::WStrToUTF8(string& dest, const wstring& src);
+	void WStrToUTF8(string& dest, const wstring& src);
 
-	string GameLayer::WStrToUTF8(const wstring& str);
+	string WStrToUTF8(const wstring& str);
 
-	void GameLayer::updateContent();
+	void updateContent();
 
-	void GameLayer::updateViewByContent();
+	void updateViewByContent();
+
+	int getScoreByNum(int num);
 
 	CREATE_FUNC(GameLayer);
 
@@ -46,14 +48,15 @@ private:
 	CCLabelTTF* levelNode;
 	CCLabelTTF* currentScoreNode;
 
-	int highestScore; //×î¸ß·Ö
-	int currentScore; //µ±Ç°·Ö
-	int targetScore;  //Ä¿±ê·Ö
-	int level;		  //¹Ø¿¨
+	int highestScore; //æœ€é«˜åˆ†
+	int currentScore; //å½“å‰åˆ†
+	int targetScore;  //ç›®æ ‡åˆ†
+	int level;		  //å…³å¡
 
 	//CCArray* m_content;
 	CCArray* m_selected;
-	Cat*** m_content;
+	//Cat*** m_content;
+	CCArray** m_content;
 };
 
 #endif

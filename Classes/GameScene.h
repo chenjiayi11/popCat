@@ -2,6 +2,7 @@
 #define __GAMESCENE_H__
 #include "cocos2d.h"
 #include "Cat.h"
+#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
 using namespace std;

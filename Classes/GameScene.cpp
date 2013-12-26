@@ -12,6 +12,7 @@ CCScene* GameLayer::createScene()
 
 	scene->addChild(layer);
 
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("selected_new.wav");
 	return scene;
 }
 
@@ -159,7 +160,6 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 	{
 		int tx = location.x/catSize;
 		int ty = location.y/catSize;
-		int temp = m_content[tx]->count();
 		if(ty >= m_content[tx]->count())
 		{
 			return;
@@ -215,7 +215,7 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 				}
 
 				//选中音效
-
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("selected_new.wav");
 				int n = m_selected->count();
 				char string[50] = {0};
 				sprintf(string, "%d blocks %d points", n, getScoreByNum(n));

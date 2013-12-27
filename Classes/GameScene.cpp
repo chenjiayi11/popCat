@@ -341,7 +341,7 @@ void GameLayer::playParticleEffect(CCPoint point)
 	particle->setLife(1.0f);
 	particle->setSpeed(100);
 	particle->setSpeedVar(40);
-	particle->setEmissionRate(1000);
+	particle->setEmissionRate(500);
 	particle->setAutoRemoveOnFinish(true);
 	this->addChild(particle, 10);
 	particle->setPosition(point);

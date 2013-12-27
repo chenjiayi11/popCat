@@ -34,6 +34,8 @@ public:
 
 	string WStrToUTF8(const wstring& str);
 
+	void playParticleEffect(CCPoint point);
+
 	void updateContent();
 
 	void updateViewByContent();

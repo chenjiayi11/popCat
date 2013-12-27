@@ -188,6 +188,7 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 					tempCat->setStatus(2);
 					tempCat->removeFromParentAndCleanup(true);
 					//TODO 粒子效果 声音
+					playParticleEffect(ccp(tempCat->x*catSize + catSize/2, tempCat->y*catSize + catSize/2));
 				}
 				updateContent();
 				updateViewByContent();
@@ -330,6 +331,21 @@ string GameLayer::WStrToUTF8(const wstring& str)
 	return result;
 }
 
+void GameLayer::playParticleEffect(CCPoint point)
+{
+	CCParticleSystemQuad *particle = CCParticleFlower::create();
+	particle->setTexture(CCTextureCache::sharedTextureCache()->addImage("fire.png"));
+	particle->setDuration(0.3f);
+	particle->setGravity(ccp(0,-100));
+	particle->setLifeVar(0);
+	particle->setLife(1.0f);
+	particle->setSpeed(100);
+	particle->setSpeedVar(40);
+	particle->setEmissionRate(1000);
+	particle->setAutoRemoveOnFinish(true);
+	this->addChild(particle, 10);
+	particle->setPosition(point);
+}
 void GameLayer::updateContent()
 {
 	justScore = currentScore;

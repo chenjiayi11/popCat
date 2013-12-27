@@ -1,6 +1,9 @@
-﻿Build started 2013/12/26 18:57:58.
+﻿Build started 2013/12/27 13:05:57.
      1>Project "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\popCat.vcxproj" on node 2 (Build target(s)).
-     1>PreLinkEvent:
+     1>ClCompile:
+         D:\programfile\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\include" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\kazmath\include" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\platform\win32" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\platform\third_party\win32" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\platform\third_party\win32\OGLES" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\external" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\external\chipmunk\include\chipmunk" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\CocosDenshion\include" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\extensions" /I..\Classes /I.. /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USE_MATH_DEFINES /D GL_GLEXT_PROTOTYPES /D CC_ENABLE_CHIPMUNK_INTEGRATION=1 /D COCOS2D_DEBUG=1 /D _CRT_SECURE_NO_WARNINGS /D _SCL_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug.win32\\" /Fd"Debug.win32\vc110.pdb" /Gd /TP /wd4267 /wd4251 /wd4244 /analyze- /errorReport:prompt main.cpp
+         main.cpp
+       PreLinkEvent:
          if not exist "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\" mkdir "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\"
          xcopy /Y /Q "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\external\libwebsockets\win32\lib\*.*" "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\"
          :VCEnd
@@ -17,10 +20,9 @@
          "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\libExtensions.lib"
          "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\libBox2D.lib"
          "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\libchipmunk.lib"
-     1>AppDelegate.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
          popCat.vcxproj -> D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\popCat.exe
      1>Done Building Project "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\popCat.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.86
+Time Elapsed 00:00:02.72

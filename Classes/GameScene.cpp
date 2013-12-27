@@ -4,6 +4,9 @@
 
 using namespace std;
 
+enum{
+	kNodeTag = 1,
+};
 CCScene* GameLayer::createScene()
 {
 	CCScene* scene = CCScene::create();
@@ -52,6 +55,12 @@ bool GameLayer::init()
 	bg->setPosition(VisibleRect::center());
 
 	this->addChild(bg, -1);
+
+	CCSpriteBatchNode* node = CCSpriteBatchNode::create("my_cats.png");
+	this->addChild(node, 0, kNodeTag);
+	/*Cat::cache = CCSpriteFrameCache::sharedSpriteFrameCache();
+	Cat::cache->addSpriteFramesWithFile("my_cats.plist");*/
+	Cat::initCache();
 
 	m_times = 0;
 	highestScore = 322654;
@@ -123,6 +132,7 @@ bool GameLayer::init()
 void GameLayer::initData()
 {
 	m_content = new CCArray*[boxSize];
+	CCNode* parent = getChildByTag(kNodeTag);
 	for(int i=0; i<boxSize; i++)
 	{
 		m_content[i] = CCArray::createWithCapacity(boxSize);
@@ -133,7 +143,7 @@ void GameLayer::initData()
 			cat->setXandY(i,j);
 			cat->setAnchorPoint(ccp(0,0));
 			cat->setPosition(ccp(i*catSize, VisibleRect::top().y + j*catSize));
-			this->addChild(cat);
+			parent->addChild(cat);
 			CCActionInterval* actionTo = CCMoveTo::create(0.8+0.06*j, ccp(i*catSize, j*catSize));
 			m_content[i]->addObject(cat);
 			cat->runAction(actionTo);
@@ -175,7 +185,7 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 				{
 					Cat* tempCat = (Cat*)obj;
 					m_content[tempCat->x]->removeObject(tempCat);
-					tempCat->status = 2;
+					tempCat->setStatus(2);
 					tempCat->removeFromParentAndCleanup(true);
 					//TODO 粒子效果 声音
 				}
@@ -191,7 +201,7 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 				CCARRAY_FOREACH(m_selected, pObj)
 				{
 					Cat* tempCat = (Cat*)pObj;
-					tempCat->status = 0;
+					tempCat->setToSelected(false);
 				}
 				m_selected->release();
 				m_selected = NULL;
@@ -211,7 +221,7 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 				CCARRAY_FOREACH(m_selected, pObj)
 				{
 					Cat* tempCat = (Cat*)pObj;
-					tempCat->status = 1;
+					tempCat->setToSelected(true);
 				}
 
 				//选中音效

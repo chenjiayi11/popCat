@@ -57,4 +57,21 @@ void Cat::setToSelected(bool b)
 void Cat::setStatus(int s)
 {
 	status = s;
+	switch (s)
+	{
+	default:
+		setToSelected(false);
+		break;
+	case 0:
+		setToSelected(false);
+		break;
+	case 1:
+		setToSelected(true);
+		break;
+	case 3:
+		char string[20] = {0};
+		sprintf(string, myCat[catColor], 3);
+		this->setDisplayFrame(cache->spriteFrameByName(string));
+		break;
+	}
 }

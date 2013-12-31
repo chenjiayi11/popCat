@@ -123,22 +123,88 @@ bool GameLayer::init()
 	this->addChild(hintScoreNode);
 	hintScoreNode->setVisible(false);
 
-	initData();
-	this->schedule(schedule_selector(GameLayer::initFinished), 1.3f);
+	s_levelLabel = CCLabelTTF::create("关卡","arial", 30);
+	s_levelLabel->setColor(ccc3(255,255,255));
+	this->addChild(s_levelLabel);
+
+	s_label = CCLabelTTF::create("", "arial", 30);
+	s_label->setColor(ccc3(255,255,255));
+	this->addChild(s_label);
+
+	s_targetScore = CCLabelTTF::create("", "arial", 30);
+	s_targetScore->setColor(ccc3(255,255,255));
+	this->addChild(s_targetScore);
+
+	result_label = CCLabelBMFont::create("win", "fonts/bitmapFontTest.fnt");
+	result_label->setScale(1.5f);
+	result_label->setPosition(ccp(VisibleRect::center().x, VisibleRect::top().y+result_label->getContentSize().height));
+	this->addChild(result_label);
+
+	initLevelState();
 
 	return true;
+}
+
+void GameLayer::initLevelState()
+{
+	ostringstream os;
+	string levelStr = WStrToUTF8(L"关 卡 ");
+	os<<level;
+	levelStr = levelStr + os.str();
+	levelNode->setString(levelStr.c_str());
+	s_levelLabel->setString(levelStr.c_str());
+	s_levelLabel->setPosition(ccp(0-VisibleRect::center().x, VisibleRect::center().y + 50));
+
+	string label_target = WStrToUTF8(L"目 标 分");
+	s_label->setString(label_target.c_str());
+	s_label->setPosition(ccp(0-VisibleRect::center().x, VisibleRect::center().y));
+
+	os.str("");
+	os<<targetScore;
+	s_targetScore->setString(os.str().c_str());
+	s_targetScore->setPosition(ccp(0-VisibleRect::center().x, VisibleRect::center().y - 50));
+
+	string targetAndScore = WStrToUTF8(L"目标分 ");
+	targetAndScore = targetAndScore + os.str();
+	targetScoreNode->setString(targetAndScore.c_str());
+
+	os.str("");
+	os<<currentScore;
+	currentScoreNode->setString(os.str().c_str());
+
+	CCActionInterval* moveIn = CCMoveBy::create(0.5f, ccp(VisibleRect::right().x, 0));
+	CCActionInterval* moveOut = CCMoveBy::create(0.5f, ccp(VisibleRect::right().x, 0));
+
+	CCActionInterval* moveIn_1 = CCEaseElasticOut::create(((CCActionInterval*)moveIn->copy()->autorelease()), 0.5f);
+	CCActionInterval* moveOut_1 = (CCActionInterval*)moveOut->copy()->autorelease();
+
+	CCActionInterval* moveIn_2 = CCEaseElasticOut::create(((CCActionInterval*)moveIn->copy()->autorelease()), 0.8f);
+	CCActionInterval* moveOut_2 = (CCActionInterval*)moveOut->copy()->autorelease();
+
+	CCDelayTime *delay = CCDelayTime::create(0.5f);
+	
+	CCSequence* sq = CCSequence::create(moveIn, delay, moveOut, CCCallFunc::create(this, callfunc_selector(GameLayer::initData)), NULL);
+	CCSequence* sq1 = CCSequence::create(moveIn_1, CCCA(delay), moveOut_1, NULL);
+	CCSequence* sq2 = CCSequence::create(moveIn_2, CCCA(delay), moveOut_2, NULL);
+
+	s_targetScore->runAction(sq);
+	s_label->runAction(sq1);
+	s_levelLabel->runAction(sq2);
+
+	this->schedule(schedule_selector(GameLayer::initFinished), 2.8f);
 }
 
 void GameLayer::initData()
 {
 	m_content = new CCArray*[boxSize];
 	CCNode* parent = getChildByTag(kNodeTag);
+	parent->removeAllChildren();
 	for(int i=0; i<boxSize; i++)
 	{
 		m_content[i] = CCArray::createWithCapacity(boxSize);
 		for(int j=0; j<boxSize; j++)
 		{
-			int random = (int)(CCRANDOM_0_1() * 100)%5;
+			int random = getRandomColor();
 			Cat* cat = Cat::CreateWithNum(random);
 			cat->setXandY(i,j);
 			cat->setAnchorPoint(ccp(0,0));
@@ -195,6 +261,10 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 				m_selected->release();
 				m_selected = NULL;
 				hintScoreNode->setVisible(false);
+				if(isGameEnd())
+				{
+					processGameEnd();
+				}
 				return;
 			}else
 			{
@@ -433,4 +503,109 @@ void GameLayer::stepForScore(float dt)
 		return;
 	}
 	m_times++;
+}
+
+int GameLayer::getRandomColor()
+{
+	cc_timeval psv;
+	CCTime::gettimeofdayCocos2d(&psv,NULL);
+	unsigned long int seed = psv.tv_sec*1000 + psv.tv_usec*1000;
+	srand(seed);
+	int random = (int)(CCRANDOM_0_1() * 100)%5;
+	return random;
+}
+
+bool GameLayer::isGameEnd()
+{
+	
+	for(int i=0;i<boxSize;i++)
+	{
+		CCObject* pObj;
+		CCARRAY_FOREACH(m_content[i], pObj)
+		{
+			CCArray* array = CCArray::create();
+			popCat(pObj, array);
+			if(array->count() > 1)
+			{
+				return false;
+			}
+		}
+	}
+	
+	return true;
+}
+
+void GameLayer::removeLeftCat()
+{
+	for(int i=0; i<boxSize; i++)
+	{
+		CCObject* pObj;
+		CCARRAY_FOREACH(m_content[i], pObj)
+		{
+			Cat* tempCat = (Cat*)pObj;
+			tempCat->removeFromParentAndCleanup(true);
+			playParticleEffect(ccp(tempCat->x*catSize + catSize/2, tempCat->y*catSize + catSize/2));
+		}
+	}
+
+	if(m_content != NULL)
+	{
+		for(int i=0; i<boxSize; i++)
+		{
+			if(m_content[i] != NULL)
+			{
+				m_content[i]->release();
+			}
+		}
+	}
+	delete m_content;
+}
+
+void GameLayer::processLeftCat()
+{
+	for(int i=0; i<boxSize; i++)
+	{
+		CCObject* pObj;
+		CCARRAY_FOREACH(m_content[i], pObj)
+		{
+			Cat* tempCat = (Cat*)pObj;
+			tempCat->setStatus(3);
+		}
+	}
+}
+
+void GameLayer::processGameEnd()
+{
+	if(currentScore >= targetScore)
+	{
+		level++;
+		if(level > 9)
+		{
+			return;
+		}
+		targetScore = levelScore[level-1];
+		result_label->setString("win");
+	}else
+	{
+		level = 1;
+		targetScore = levelScore[level-1];
+		currentScore = 0;
+		justScore = 0;
+		result_label->setString("game over");
+	}
+	this->setTouchEnabled(false);
+
+	CCDelayTime *delay1 = CCDelayTime::create(1.5f);
+	CCDelayTime *delay = CCDelayTime::create(0.5f);
+	CCCallFunc* processCat = CCCallFunc::create(this, callfunc_selector(GameLayer::processLeftCat));
+	CCCallFunc* initLevel = CCCallFunc::create(this, callfunc_selector(GameLayer::initLevelState));
+	CCCallFunc* removeCat = CCCallFunc::create(this, callfunc_selector(GameLayer::removeLeftCat));
+
+	CCActionInterval* moveIn = CCMoveTo::create(0.4f, VisibleRect::center());
+	CCActionInterval* moveOut = CCMoveTo::create(0.4f, ccp(VisibleRect::center().x, 
+		VisibleRect::top().y + result_label->getContentSize().height));
+	
+	CCSequence* sq = CCSequence::create(delay1, processCat, delay, removeCat, CCCA(delay1), 
+		moveIn, CCCA(delay), moveOut, CCCA(delay), initLevel, NULL);
+	result_label->runAction(sq);
 }

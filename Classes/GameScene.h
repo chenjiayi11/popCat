@@ -7,6 +7,7 @@
 USING_NS_CC;
 using namespace std;
 
+#define CCCA(x)   (x->copy()->autorelease())
 #define userDefault CCUserDefault::sharedUserDefault()
 
 class GameLayer : public CCLayer
@@ -23,6 +24,8 @@ public:
 	virtual void ccTouchesMoved(CCSet *pTouches, CCEvent *pEvent);
 
 	virtual void ccTouchesEnded(CCSet *pTouches, CCEvent *pEvent);
+
+	void initLevelState();
 
 	void initData();
 
@@ -44,6 +47,14 @@ public:
 
 	int getScoreByNum(int num);
 
+	int getRandomColor();
+
+	bool isGameEnd();
+
+	void removeLeftCat();
+	void processLeftCat();
+	void processGameEnd();
+
 	CREATE_FUNC(GameLayer);
 
 private:
@@ -53,6 +64,12 @@ private:
 	CCLabelTTF* levelNode;
 	CCLabelTTF* currentScoreNode;
 	CCLabelTTF* hintScoreNode;
+
+	CCLabelTTF* s_levelLabel;
+	CCLabelTTF* s_label;
+	CCLabelTTF* s_targetScore;
+
+	CCLabelBMFont* result_label;
 
 	int highestScore; //最高分
 	int currentScore; //当前分

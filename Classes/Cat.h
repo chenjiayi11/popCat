@@ -29,6 +29,6 @@ public:
 	int x;
 	int y;
 private:
-	int status; //0 default 1 selected 2 would be delete
+	int status; //0 default 1 selected 2 would be delete 3 game end
 };
 #endif // !__CAT_H_

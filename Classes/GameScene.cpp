@@ -199,6 +199,12 @@ void GameLayer::initData()
 	m_content = new CCArray*[boxSize];
 	CCNode* parent = getChildByTag(kNodeTag);
 	parent->removeAllChildren();
+
+	cc_timeval psv;
+	CCTime::gettimeofdayCocos2d(&psv,NULL);
+	unsigned long int seed = psv.tv_sec*1000 + psv.tv_usec/1000;
+	srand(seed);
+
 	for(int i=0; i<boxSize; i++)
 	{
 		m_content[i] = CCArray::createWithCapacity(boxSize);
@@ -507,10 +513,6 @@ void GameLayer::stepForScore(float dt)
 
 int GameLayer::getRandomColor()
 {
-	cc_timeval psv;
-	CCTime::gettimeofdayCocos2d(&psv,NULL);
-	unsigned long int seed = psv.tv_sec*1000 + psv.tv_usec*1000;
-	srand(seed);
 	int random = (int)(CCRANDOM_0_1() * 100)%5;
 	return random;
 }

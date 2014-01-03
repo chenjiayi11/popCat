@@ -135,7 +135,7 @@ bool GameLayer::init()
 	s_targetScore->setColor(ccc3(255,255,255));
 	this->addChild(s_targetScore);
 
-	result_label = CCLabelBMFont::create("win", "fonts/bitmapFontTest.fnt");
+	result_label = CCLabelBMFont::create("win", "bitmapFontTest.fnt");
 	result_label->setScale(1.5f);
 	result_label->setPosition(ccp(VisibleRect::center().x, VisibleRect::top().y+result_label->getContentSize().height));
 	this->addChild(result_label);

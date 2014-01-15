@@ -70,10 +70,12 @@ bool GameLayer::init()
 	justScore = 0;
 
 	//top label
+	int topNodeH = 100;
+	int line1P = 75;
 	CCNode* topNode = CCLayerColor::create(ccc4(0,0,0,88));
-	topNode->setContentSize(CCSizeMake(VisibleRect::right().x, catSize));
+	topNode->setContentSize(CCSizeMake(VisibleRect::right().x, topNodeH));
 	topNode->setAnchorPoint(ccp(0,0));
-	topNode->setPosition(ccp(0,VisibleRect::top().y-catSize));
+	topNode->setPosition(ccp(0,VisibleRect::top().y-topNodeH));
 	this->addChild(topNode);
 
 	highestScoreNode = CCLabelTTF::create("最高分","arial", 24);
@@ -83,7 +85,7 @@ bool GameLayer::init()
 	os<<highestScore;
 	highestStr = highestStr + os.str();
 	highestScoreNode->setString(highestStr.c_str());
-	highestScoreNode->setPosition(ccp(highestScoreNode->getContentSize().width/2 + 10, 55));
+	highestScoreNode->setPosition(ccp(highestScoreNode->getContentSize().width/2 + 10, line1P));
 	topNode->addChild(highestScoreNode);
 
 	targetScoreNode = CCLabelTTF::create("目标分","arial", 24);
@@ -93,7 +95,7 @@ bool GameLayer::init()
 	os<<targetScore;
 	targetStr = targetStr + os.str();
 	targetScoreNode->setString(targetStr.c_str());
-	targetScoreNode->setPosition(ccp(VisibleRect::center().x, 55));
+	targetScoreNode->setPosition(ccp(VisibleRect::center().x, line1P));
 	topNode->addChild(targetScoreNode);
 
 	levelNode = CCLabelTTF::create("关卡","arial", 24);
@@ -103,15 +105,11 @@ bool GameLayer::init()
 	os<<level;
 	levelStr = levelStr + os.str();
 	levelNode->setString(levelStr.c_str());
-	levelNode->setPosition(ccp(VisibleRect::right().x*3/4,55));
+	levelNode->setPosition(ccp(VisibleRect::right().x*3/4,line1P));
 	topNode->addChild(levelNode);
 
-	currentScoreNode = CCLabelTTF::create();
-	currentScoreNode->setColor(ccc3(255,255,255));
-	currentScoreNode->setFontName("arial");
-	currentScoreNode->setFontSize(26);
-	currentScoreNode->setString("0");
-	currentScoreNode->setPosition(ccp(VisibleRect::center().x, currentScoreNode->getContentSize().height/2));
+	currentScoreNode = CCLabelBMFont::create("0", "bitmapFontTest.fnt");
+	currentScoreNode->setPosition(ccp(VisibleRect::center().x, currentScoreNode->getContentSize().height/2 + 5));
 	topNode->addChild(currentScoreNode);
 
 	hintScoreNode = CCLabelTTF::create();

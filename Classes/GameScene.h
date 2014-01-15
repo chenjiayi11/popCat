@@ -62,7 +62,7 @@ private:
 	CCLabelTTF* highestScoreNode;
 	CCLabelTTF* targetScoreNode;
 	CCLabelTTF* levelNode;
-	CCLabelTTF* currentScoreNode;
+	CCLabelBMFont* currentScoreNode;
 	CCLabelTTF* hintScoreNode;
 
 	CCLabelTTF* s_levelLabel;

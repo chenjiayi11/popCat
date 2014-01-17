@@ -14,6 +14,7 @@ class GameLayer : public CCLayer
 {
 public:
 	virtual bool init();
+	virtual void onEnterTransitionDidFinish();
 	GameLayer();
 	~GameLayer();
 
@@ -55,6 +56,8 @@ public:
 	void processLeftCat();
 	void processGameEnd();
 
+	void pauseCallback(CCObject* pSender);
+
 	CREATE_FUNC(GameLayer);
 
 private:
@@ -82,6 +85,20 @@ private:
 	CCArray* m_selected;
 	//Cat*** m_content;
 	CCArray** m_content;
+};
+
+class PauseLayer : public CCLayerColor
+{
+public:
+	virtual bool init();
+
+	void goOnCallback(CCObject* pSender);
+
+	void homeCallback(CCObject* pSender);
+
+	virtual bool ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent);
+
+	CREATE_FUNC(PauseLayer);
 };
 
 #endif

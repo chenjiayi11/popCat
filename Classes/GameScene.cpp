@@ -1,12 +1,15 @@
 ﻿#include "GameScene.h"
 #include "VisibleRect.h"
 #include "AppMacros.h"
+#include "MenuScene.h"
 
 using namespace std;
 
 enum{
 	kNodeTag = 1,
 };
+#define SCORE_KEY "highest_score"
+
 CCScene* GameLayer::createScene()
 {
 	CCScene* scene = CCScene::create();
@@ -22,6 +25,7 @@ CCScene* GameLayer::createScene()
 GameLayer::GameLayer()
 {
 	m_selected = NULL;
+	m_content = NULL;
 }
 
 GameLayer::~GameLayer()
@@ -44,6 +48,14 @@ GameLayer::~GameLayer()
 	}
 }
 
+void GameLayer::onEnterTransitionDidFinish()
+{
+	CCLayer::onEnterTransitionDidFinish();
+	CCDelayTime* delay = CCDelayTime::create(0.3f);
+	CCSequence* squence = CCSequence::createWithTwoActions(delay, CCCallFunc::create(this, callfunc_selector(GameLayer::initLevelState)));
+	this->runAction(squence);
+}
+
 bool GameLayer::init()
 {
 	if(!CCLayer::init())
@@ -63,17 +75,18 @@ bool GameLayer::init()
 	Cat::initCache();
 
 	m_times = 0;
-	highestScore = 322654;
+	highestScore = userDefault->getIntegerForKey(SCORE_KEY);
 	level = 1;
 	targetScore = levelScore[level-1];
 	currentScore = 0;
 	justScore = 0;
+	isPause = false;
 
 	//top label
 	int topNodeH = 100;
 	int line1P = 75;
-	CCNode* topNode = CCLayerColor::create(ccc4(0,0,0,88));
-	topNode->setContentSize(CCSizeMake(VisibleRect::right().x, topNodeH));
+	CCNode* topNode = CCSprite::create("top_node_bg.png");
+	//topNode->setContentSize(CCSizeMake(VisibleRect::right().x, topNodeH));
 	topNode->setAnchorPoint(ccp(0,0));
 	topNode->setPosition(ccp(0,VisibleRect::top().y-topNodeH));
 	this->addChild(topNode);
@@ -99,7 +112,7 @@ bool GameLayer::init()
 	topNode->addChild(targetScoreNode);
 
 	levelNode = CCLabelTTF::create("关卡","arial", 24);
-	levelNode->setColor(ccc3(128,128,255));
+	levelNode->setColor(ccc3(70,201,220)); //46c9dc
 	string levelStr = WStrToUTF8(L"关卡 ");
 	os.str("");
 	os<<level;
@@ -138,7 +151,16 @@ bool GameLayer::init()
 	result_label->setPosition(ccp(VisibleRect::center().x, VisibleRect::top().y+result_label->getContentSize().height));
 	this->addChild(result_label);
 
-	initLevelState();
+	CCSprite* pauseNormal = CCSprite::create("pause_button.png");
+	CCSprite* pauseSelected = CCSprite::create("pause_button.png");
+	pauseNormal->setPosition(ccp(pauseNormal->getContentSize().width*0.1, pauseNormal->getContentSize().height*0.1));
+	pauseSelected->setScale(1.2);
+	CCMenuItemSprite *pPauseItem = CCMenuItemSprite::create(pauseNormal, pauseSelected, this, menu_selector(GameLayer::pauseCallback));
+
+	CCMenu* pMenu = CCMenu::create(pPauseItem, NULL);
+	pMenu->setPosition(CCPointZero);
+	pPauseItem->setPosition(ccp(VisibleRect::right().x-50,60));
+	topNode->addChild(pMenu);
 
 	return true;
 }
@@ -173,17 +195,19 @@ void GameLayer::initLevelState()
 	CCActionInterval* moveIn = CCMoveBy::create(0.5f, ccp(VisibleRect::right().x, 0));
 	CCActionInterval* moveOut = CCMoveBy::create(0.5f, ccp(VisibleRect::right().x, 0));
 
-	CCActionInterval* moveIn_1 = CCEaseElasticOut::create(((CCActionInterval*)moveIn->copy()->autorelease()), 0.5f);
+	CCActionInterval* moveIn_1 = (CCActionInterval*)moveIn->copy()->autorelease();
 	CCActionInterval* moveOut_1 = (CCActionInterval*)moveOut->copy()->autorelease();
 
-	CCActionInterval* moveIn_2 = CCEaseElasticOut::create(((CCActionInterval*)moveIn->copy()->autorelease()), 0.8f);
+	CCActionInterval* moveIn_2 = (CCActionInterval*)moveIn->copy()->autorelease();
 	CCActionInterval* moveOut_2 = (CCActionInterval*)moveOut->copy()->autorelease();
 
+	CCDelayTime *delay_03 = CCDelayTime::create(0.3f);
+	CCDelayTime *delay_06 = CCDelayTime::create(0.6f);
 	CCDelayTime *delay = CCDelayTime::create(0.5f);
 	
-	CCSequence* sq = CCSequence::create(moveIn, delay, moveOut, CCCallFunc::create(this, callfunc_selector(GameLayer::initData)), NULL);
-	CCSequence* sq1 = CCSequence::create(moveIn_1, CCCA(delay), moveOut_1, NULL);
-	CCSequence* sq2 = CCSequence::create(moveIn_2, CCCA(delay), moveOut_2, NULL);
+	CCSequence* sq = CCSequence::create(delay_06, moveIn, delay, moveOut, CCCallFunc::create(this, callfunc_selector(GameLayer::initData)), NULL);
+	CCSequence* sq1 = CCSequence::create(delay_03, moveIn_1, CCCA(delay),CCCA(delay_03), moveOut_1, NULL);
+	CCSequence* sq2 = CCSequence::create(moveIn_2, CCCA(delay),CCCA(delay_06), moveOut_2, NULL);
 
 	s_targetScore->runAction(sq);
 	s_label->runAction(sq1);
@@ -576,6 +600,12 @@ void GameLayer::processLeftCat()
 
 void GameLayer::processGameEnd()
 {
+	//记录最高分
+	if(currentScore > highestScore)
+	{
+		userDefault->setIntegerForKey(SCORE_KEY, currentScore);
+	}
+
 	if(currentScore >= targetScore)
 	{
 		level++;
@@ -608,4 +638,76 @@ void GameLayer::processGameEnd()
 	CCSequence* sq = CCSequence::create(delay1, processCat, delay, removeCat, CCCA(delay1), 
 		moveIn, CCCA(delay), moveOut, CCCA(delay), initLevel, NULL);
 	result_label->runAction(sq);
+}
+
+void GameLayer::pauseCallback(CCObject* pSender)
+{
+	if(!isPause)
+	{
+		PauseLayer* pauselayer = PauseLayer::create();
+		pauselayer->initWithColor(ccc4(0,0,0,128));
+		CCNode* node = this->getParent();
+		node->addChild(pauselayer);
+		isPause = true;
+	}
+}
+
+bool PauseLayer::init()
+{
+	if(!CCLayerColor::init())
+	{
+		return false;
+	}
+
+	CCSprite* goNormal = CCSprite::create("start_button.png");
+	CCSprite* goSelected = CCSprite::create("start_button.png");
+	goSelected->setScale(1.2);
+	goNormal->setPosition(ccp(goNormal->getContentSize().width * 0.1, goNormal->getContentSize().height * 0.1));
+	CCMenuItemSprite* goMenu = CCMenuItemSprite::create(goNormal, goSelected, this, menu_selector(PauseLayer::goOnCallback));
+
+	CCSprite* homeNormal = CCSprite::create("home_button.png");
+	CCSprite* homeSelected = CCSprite::create("home_button.png");
+	homeSelected->setScale(1.2);
+	homeNormal->setPosition(ccp(homeNormal->getContentSize().width * 0.1, homeNormal->getContentSize().height * 0.1));
+	CCMenuItemSprite* homeMenu = CCMenuItemSprite::create(homeNormal, homeSelected, this, menu_selector(PauseLayer::homeCallback));
+
+	CCMenu* menu = CCMenu::create(goMenu, homeMenu, NULL);
+	menu->setPosition(CCPointZero);
+	goMenu->setPosition(ccp(VisibleRect::center().x, VisibleRect::center().y- 50));
+	homeMenu->setPosition(ccp(450, 240));
+	this->addChild(menu);
+	this->setTouchEnabled(true);
+	CCDirector::sharedDirector()->getTouchDispatcher()->addTargetedDelegate(this, 0, true);
+
+	goMenu->setScale(0);
+	homeMenu->setScale(0);
+	CCScaleTo* scale = CCScaleTo::create(1.5f, 1.0);
+	CCActionInterval* scale_out1 = CCEaseElasticOut::create(((CCActionInterval*)scale->copy()->autorelease()), 0.3);
+	CCActionInterval* scale_out2 = CCEaseElasticOut::create(((CCActionInterval*)scale->copy()->autorelease()), 0.3);
+	CCDelayTime *delay = CCDelayTime::create(0.2f);
+
+	CCSequence* sq2 = CCSequence::create(delay, scale_out2, NULL);
+	goMenu->runAction(scale_out1);
+	homeMenu->runAction(sq2);
+}
+
+void PauseLayer::goOnCallback(CCObject* pSender)
+{
+	CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(this);
+	this->removeFromParentAndCleanup(true);
+	isPause = false;
+}
+
+void PauseLayer::homeCallback(CCObject* pSender)
+{
+	CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(this);
+	CCScene* scene = GameMenu::createScene();
+	CCTransitionScene* pScene = CCTransitionCrossFade::create(0.5f, scene);
+	CCDirector::sharedDirector()->replaceScene(pScene);
+	isPause = false;
+}
+
+bool PauseLayer::ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent)
+{
+	return true;
 }

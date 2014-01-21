@@ -20,8 +20,8 @@ public:
 	CREATE_FUNC(GameMenu);
 
 private:
-	CCSprite* topSprite;			//上面的文字
-	CCMenuItemSprite* menuStart;	//开始按钮
-	CCMenuItemSprite* menuPH;		//排行按钮
+	CCSprite* topSprite;
+	CCMenuItemSprite* menuStart;
+	CCMenuItemSprite* menuPH;
 };
 #endif

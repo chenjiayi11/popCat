@@ -6,7 +6,9 @@
 CCScene* GameMenu::createScene()
 {
 	CCScene* scene = CCScene::create();
+
 	GameMenu* layer = GameMenu::create();
+
 	scene->addChild(layer);
 
 	return scene;
@@ -53,6 +55,8 @@ bool GameMenu::init()
 	menuPH->setVisible(false);
 
 	this->addChild(menu);
+
+	return true;
 }
 
 void GameMenu::onEnterTransitionDidFinish()

@@ -56,11 +56,15 @@ public:
 	void processLeftCat();
 	void processGameEnd();
 
+	void gameEndCallback();
+
 	void pauseCallback(CCObject* pSender);
 
 	CREATE_FUNC(GameLayer);
 
 private:
+	CCMenuItemSprite *pPauseItem;
+	CCNode* topNode;
 
 	CCLabelTTF* highestScoreNode;
 	CCLabelTTF* targetScoreNode;
@@ -72,7 +76,7 @@ private:
 	CCLabelTTF* s_label;
 	CCLabelTTF* s_targetScore;
 
-	CCLabelBMFont* result_label;
+	//CCLabelBMFont* result_label;
 
 	int highestScore; //最高分
 	int currentScore; //当前分
@@ -80,6 +84,7 @@ private:
 	int level;		  //关卡
 	int m_times;
 	int justScore;
+	bool hasBreak;		//是否破纪录
 
 	//CCArray* m_content;
 	CCArray* m_selected;
@@ -99,6 +104,26 @@ public:
 	virtual bool ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent);
 
 	CREATE_FUNC(PauseLayer);
+};
+
+class GameEndLayer : public CCLayer
+{
+public:
+	GameEndLayer();
+	virtual bool init();
+
+	void setLayerState(int state);
+
+	void goOnCallback(CCObject* pSender);
+
+	void homeCallback(CCObject* pSender);
+
+	virtual bool ccTouchBegan(CCTouch *pTouch, CCEvent *pEvent);
+
+	static GameEndLayer* create(int s);
+
+private:
+	int layer_state; //0:game_over 1:next_level 2:new_record
 };
 
 #endif

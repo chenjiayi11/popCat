@@ -843,7 +843,7 @@ bool GameEndLayer::init()
 
 	hint->setScale(0);
 	disk->setScale(0);
-	CCActionInterval* scale = CCScaleTo::create(1.0f, 1.0);
+	CCActionInterval* scale = CCScaleTo::create(1.2f, 1.0);
 	CCActionInterval* scale_out1 = CCEaseElasticOut::create(((CCActionInterval*)scale->copy()->autorelease()), 0.3);
 	CCActionInterval* scale_out2 = CCEaseElasticOut::create(((CCActionInterval*)scale->copy()->autorelease()), 0.3);
 	hint->runAction(scale_out1);

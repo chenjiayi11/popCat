@@ -16,7 +16,7 @@ public:
 	virtual bool init();
 	virtual void onEnterTransitionDidFinish();
 	GameLayer();
-	~GameLayer();
+	virtual ~GameLayer();
 
 	static CCScene* createScene();
 

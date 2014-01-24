@@ -25,8 +25,10 @@ package com.taobao.popcat;
 
 import org.cocos2dx.lib.Cocos2dxActivity;
 import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
+import org.cocos2dx.lib.Cocos2dxHelper;
 
 import android.os.Bundle;
+import android.util.Log;
 
 public class popCat extends Cocos2dxActivity{
 	
@@ -42,7 +44,14 @@ public class popCat extends Cocos2dxActivity{
     	return glSurfaceView;
     }
 
-    static {
+    @Override
+	protected void onResume() {
+		super.onResume();
+		int h = Cocos2dxHelper.getIntegerForKey("highest_score", 0);
+    	Log.i("popCat", "highest_score: "+ h);
+	}
+
+	static {
         System.loadLibrary("popCat");
     }     
 }

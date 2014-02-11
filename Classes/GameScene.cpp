@@ -171,6 +171,7 @@ void GameLayer::initLevelState()
 	if(level == 1)
 	{
 		hasBreak = false;
+
 		//TODO 最高分刷新
 		highestScore = userDefault->getIntegerForKey(SCORE_KEY);
 		string highestStr = WStrToUTF8(L"最高分 ");
@@ -645,6 +646,7 @@ void GameLayer::processGameEnd()
 	{
 		level = 1;
 		targetScore = levelScore[level-1];
+		result_score = currentScore;
 		currentScore = 0;
 		justScore = 0;
 		//result_label->setString("game over");
@@ -868,6 +870,18 @@ bool GameEndLayer::init()
 		goMenu->runAction(sq);
 	}else
 	{
+		//显示分数
+		CCLabelBMFont* scoreLabel = CCLabelBMFont::create("0", "bitmapFontTest.fnt");
+		char string[12] = {0};
+		sprintf(string, "%d", result_score);
+		scoreLabel->setString(string);
+		scoreLabel->setPosition(ccp(VisibleRect::center().x, 795 + scoreLabel->getContentSize().height/2));
+		this->addChild(scoreLabel);
+		scoreLabel->setScale(0);
+		CCActionInterval* scaleForLabel = CCScaleTo::create(1.2f, 1.5);
+		CCActionInterval* scale_label = CCEaseElasticOut::create(((CCActionInterval*)scaleForLabel->copy()->autorelease()), 0.3);
+		scoreLabel->runAction(scale_label);
+
 		CCSprite* goNormal = CCSprite::create("restart_button.png");
 		CCSprite* goSelected = CCSprite::create("restart_button.png");
 		goSelected->setScale(1.2);

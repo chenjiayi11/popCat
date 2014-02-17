@@ -64,10 +64,14 @@ bool GameLayer::init()
 		return false;
 	}
 
-	CCSprite* bg = CCSprite::create("background.png");
-	bg->setPosition(VisibleRect::center());
-
-	this->addChild(bg, -1);
+	CCSprite* bg_grid = CCSprite::create("bg_grid.png");
+	bg_grid->setAnchorPoint(ccp(0,0));
+	bg_grid->setPosition(ccp(0,0));
+	this->addChild(bg_grid, -1);
+	CCSprite* bg_top = CCSprite::create("bg_top.png");
+	bg_top->setAnchorPoint(ccp(0,0));
+	bg_top->setPosition(ccp(0,bg_grid->getContentSize().height));
+	this->addChild(bg_top, -1);
 
 	CCSpriteBatchNode* node = CCSpriteBatchNode::create("my_cats.png");
 	this->addChild(node, 0, kNodeTag);
@@ -136,20 +140,18 @@ bool GameLayer::init()
 
 	s_levelLabel = CCLabelTTF::create("关卡","arial", 30);
 	s_levelLabel->setColor(ccc3(255,255,255));
+	s_levelLabel->setPosition(ccp(0-VisibleRect::center().x, VisibleRect::center().y + 50));
 	this->addChild(s_levelLabel);
 
 	s_label = CCLabelTTF::create("", "arial", 30);
 	s_label->setColor(ccc3(255,255,255));
+	s_label->setPosition(ccp(0-VisibleRect::center().x, VisibleRect::center().y));
 	this->addChild(s_label);
 
 	s_targetScore = CCLabelTTF::create("", "arial", 30);
 	s_targetScore->setColor(ccc3(255,255,255));
+	s_targetScore->setPosition(ccp(0-VisibleRect::center().x, VisibleRect::center().y - 50));
 	this->addChild(s_targetScore);
-
-	/*result_label = CCLabelBMFont::create("win", "bitmapFontTest.fnt");
-	result_label->setScale(1.5f);
-	result_label->setPosition(ccp(VisibleRect::center().x, VisibleRect::top().y+result_label->getContentSize().height));
-	this->addChild(result_label);*/
 
 	CCSprite* pauseNormal = CCSprite::create("pause_button.png");
 	CCSprite* pauseSelected = CCSprite::create("pause_button.png");
@@ -636,11 +638,13 @@ void GameLayer::processGameEnd()
 	if(currentScore >= targetScore)
 	{
 		level++;
-		if(level > 10)
+		if(level > 11)
 		{
-			return;
+			targetScore = levelScore[10] + (level-11)*3000;
+		}else
+		{
+			targetScore = levelScore[level-1];
 		}
-		targetScore = levelScore[level-1];
 		//result_label->setString("win");
 	}else
 	{

@@ -47,6 +47,7 @@ GameLayer::~GameLayer()
 	{
 		m_selected->release();
 	}
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->stopBackgroundMusic(true);
 }
 
 void GameLayer::onEnterTransitionDidFinish()
@@ -67,14 +68,14 @@ bool GameLayer::init()
 	CCSprite* bg_grid = CCSprite::create("bg_grid.png");
 	bg_grid->setAnchorPoint(ccp(0,0));
 	bg_grid->setPosition(ccp(0,0));
-	this->addChild(bg_grid, -1);
+	this->addChild(bg_grid, -2);
 	CCSprite* bg_top = CCSprite::create("bg_top.png");
 	bg_top->setAnchorPoint(ccp(0,0));
 	bg_top->setPosition(ccp(0,bg_grid->getContentSize().height));
-	this->addChild(bg_top, -1);
+	this->addChild(bg_top, 0);
 
 	CCSpriteBatchNode* node = CCSpriteBatchNode::create("my_cats.png");
-	this->addChild(node, 0, kNodeTag);
+	this->addChild(node, -1, kNodeTag);
 	/*Cat::cache = CCSpriteFrameCache::sharedSpriteFrameCache();
 	Cat::cache->addSpriteFramesWithFile("my_cats.plist");*/
 	Cat::initCache();
@@ -165,6 +166,7 @@ bool GameLayer::init()
 	topNode->addChild(pMenu);
 
 	topNode->setVisible(false);
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("Cat_BGM_Sketch_1.mp3", true);
 	return true;
 }
 
@@ -519,6 +521,10 @@ void GameLayer::updateViewByContent()
 		schedule(schedule_selector(GameLayer::stepForScore));
 	}
 	
+	if(m_content == NULL)
+	{
+		return;
+	}
 	for(int i=0; i<boxSize; i++)
 	{
 		if(m_content[i] != NULL)
@@ -540,9 +546,22 @@ void GameLayer::updateViewByContent()
 	}
 }
 
+/*通过个数算得分*/
 int GameLayer::getScoreByNum(int num)
 {
 	return 5 * num*num;
+}
+
+/*剩下个数得分函数*/
+int GameLayer::getScoreByLeftNum(int leftNum)
+{
+	if(leftNum > 10)
+	{
+		return 0;
+	}else
+	{
+		return 2000 - leftNum*leftNum*20;
+	}
 }
 
 void GameLayer::stepForScore(float dt)
@@ -588,6 +607,7 @@ bool GameLayer::isGameEnd()
 
 void GameLayer::removeLeftCat()
 {
+	int leftCatNum = 0;
 	for(int i=0; i<boxSize; i++)
 	{
 		CCObject* pObj;
@@ -596,6 +616,7 @@ void GameLayer::removeLeftCat()
 			Cat* tempCat = (Cat*)pObj;
 			tempCat->removeFromParentAndCleanup(true);
 			playParticleEffect(ccp(tempCat->x*catSize + catSize/2, tempCat->y*catSize + catSize/2));
+			leftCatNum++;
 		}
 	}
 
@@ -611,6 +632,14 @@ void GameLayer::removeLeftCat()
 	}
 	delete m_content;
 	m_content = NULL;
+
+	if(leftCatNum < 10)
+	{
+		justScore = currentScore;
+		currentScore = currentScore + getScoreByLeftNum(leftCatNum);
+		updateViewByContent();
+	}
+	
 }
 
 void GameLayer::processLeftCat()
@@ -628,33 +657,7 @@ void GameLayer::processLeftCat()
 
 void GameLayer::processGameEnd()
 {
-	//记录最高分
-	if(currentScore > highestScore)
-	{
-		hasBreak = true;
-		userDefault->setIntegerForKey(SCORE_KEY, currentScore);
-	}
-
-	if(currentScore >= targetScore)
-	{
-		level++;
-		if(level > 11)
-		{
-			targetScore = levelScore[10] + (level-11)*3000;
-		}else
-		{
-			targetScore = levelScore[level-1];
-		}
-		//result_label->setString("win");
-	}else
-	{
-		level = 1;
-		targetScore = levelScore[level-1];
-		result_score = currentScore;
-		currentScore = 0;
-		justScore = 0;
-		//result_label->setString("game over");
-	}
+	
 	this->setTouchEnabled(false);
 
 	CCDelayTime *delay = CCDelayTime::create(1.5f);
@@ -674,7 +677,7 @@ void GameLayer::processGameEnd()
 	CCSequence* sq = CCSequence::create(processCat, delay, removeCat, CCCA(delay), gameEnd, NULL);
 	this->runAction(sq);
 
-	CCDelayTime* delay2 = CCDelayTime::create(2.0f);
+	CCDelayTime* delay2 = CCDelayTime::create(3.0f);
 	CCActionInterval* moveout = CCMoveBy::create(0.3f, ccp(0, topNode->getContentSize().height));
 	CCSequence* sq2 = CCSequence::create(delay2, moveout, NULL);
 	topNode->runAction(sq2);
@@ -682,22 +685,50 @@ void GameLayer::processGameEnd()
 
 void GameLayer::gameEndCallback()
 {
-		if(level > 1)
+	//记录最高分
+	if(currentScore > highestScore)
+	{
+		hasBreak = true;
+		userDefault->setIntegerForKey(SCORE_KEY, currentScore);
+	}
+
+	if(currentScore >= targetScore)
+	{
+		level++;
+		if(level > 12)
 		{
-			GameEndLayer* endlayer = GameEndLayer::create(1);
-			this->addChild(endlayer);
+			targetScore = levelScore[11] + (level-12)*2500;
 		}else
 		{
-			GameEndLayer* endlayer;
-			if(hasBreak)
-			{
-				endlayer = GameEndLayer::create(2);
-			}else
-			{
-				endlayer = GameEndLayer::create(0);
-			}
-			this->addChild(endlayer);
+			targetScore = levelScore[level-1];
 		}
+		//result_label->setString("win");
+	}else
+	{
+		level = 1;
+		targetScore = levelScore[level-1];
+		result_score = currentScore;
+		currentScore = 0;
+		justScore = 0;
+		//result_label->setString("game over");
+	}
+
+	if(level > 1)
+	{
+		GameEndLayer* endlayer = GameEndLayer::create(1);
+		this->addChild(endlayer);
+	}else
+	{
+		GameEndLayer* endlayer;
+		if(hasBreak)
+		{
+			endlayer = GameEndLayer::create(2);
+		}else
+		{
+			endlayer = GameEndLayer::create(0);
+		}
+		this->addChild(endlayer);
+	}
 }
 
 void GameLayer::pauseCallback(CCObject* pSender)
@@ -708,6 +739,7 @@ void GameLayer::pauseCallback(CCObject* pSender)
 		pauselayer->initWithColor(ccc4(0,0,0,128));
 		CCNode* node = this->getParent();
 		node->addChild(pauselayer);
+		CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();
 		isPause = true;
 
 		/*int random = (int)(CCRANDOM_0_1() * 100)%3;
@@ -762,6 +794,7 @@ void PauseLayer::goOnCallback(CCObject* pSender)
 {
 	CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(this);
 	this->removeFromParentAndCleanup(true);
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->resumeBackgroundMusic();
 	isPause = false;
 }
 

@@ -48,6 +48,8 @@ public:
 
 	int getScoreByNum(int num);
 
+	int getScoreByLeftNum(int leftNum);
+
 	int getRandomColor();
 
 	bool isGameEnd();

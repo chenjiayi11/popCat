@@ -18,7 +18,7 @@ typedef struct tagResources
 
 static Resource smallResource = {CCSizeMake(320, 480), "small"};
 static Resource highResource = {CCSizeMake(640, 960), "high"};
-static int levelScore[] = {600,1800,3000,4200,6000,8000,10000,12000,15000,18000,20000};
+static int levelScore[] = {600,1800,3000,4200,6000,7800,9600,11400,13200,15000,17500,20000};
 static bool isPause = false;
 static int result_score;
 

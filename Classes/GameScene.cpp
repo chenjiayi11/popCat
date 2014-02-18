@@ -460,7 +460,7 @@ string GameLayer::WStrToUTF8(const wstring& str)
 
 void GameLayer::playParticleEffect(CCPoint point)
 {
-	CCParticleSystemQuad *particle = CCParticleFlower::create();
+	CCParticleSystemQuad *particle = CCParticleExplosion::create();
 	particle->setTexture(CCTextureCache::sharedTextureCache()->addImage("fire.png"));
 	particle->setDuration(0.3f);
 	particle->setGravity(ccp(0,-100));
@@ -470,6 +470,7 @@ void GameLayer::playParticleEffect(CCPoint point)
 	particle->setSpeedVar(40);
 	particle->setEmissionRate(500);
 	particle->setAutoRemoveOnFinish(true);
+	particle->setStartColor(ccc4f(255,255,255,255));
 	this->addChild(particle, 10);
 	particle->setPosition(point);
 }

@@ -2,7 +2,6 @@
 #include "VisibleRect.h"
 #include "GameScene.h"
 
-
 CCScene* GameMenu::createScene()
 {
 	CCScene* scene = CCScene::create();
@@ -22,13 +21,15 @@ bool GameMenu::init()
 	}
 
 	CCSprite* menu_bg = CCSprite::create("menu_bg.png");
+	float scalY = VisibleRect::top().y/menu_bg->getContentSize().height;
+	menu_bg->setScaleY(scalY);
 	menu_bg->setPosition(VisibleRect::center());
 
 	this->addChild(menu_bg, -1);
 
 	topSprite = CCSprite::create("menu_title.png");
-	topSprite->setPosition(ccp(menu_bg->getContentSize().width/2, menu_bg->getContentSize().height-topSprite->getContentSize().height/2 - 20));
-	menu_bg->addChild(topSprite);
+	topSprite->setPosition(ccp(VisibleRect::center().x, VisibleRect::top().y-topSprite->getContentSize().height/2 - 20));
+	this->addChild(topSprite);
 	topSprite->setScale(0);
 	topSprite->setVisible(false);
 

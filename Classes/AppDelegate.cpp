@@ -26,12 +26,19 @@ bool AppDelegate::applicationDidFinishLaunching() {
 #else
 	pEGLView->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, kResolutionFixedWidth);
 #endif
+	std::vector<std::string> searchPaths;
 
 	if (framSize.width > designResolutionSize.width)
 	{
 		pDirector->setContentScaleFactor(highResource.size.width/designResolutionSize.width);
 	}
+
+	if(framSize.height/framSize.width > designResolutionSize.height/designResolutionSize.width)
+	{
+		searchPaths.push_back("iphone5");
+	}
 	
+	CCFileUtils::sharedFileUtils()->setSearchPaths(searchPaths);
     // turn on display FPS
     pDirector->setDisplayStats(false);
 

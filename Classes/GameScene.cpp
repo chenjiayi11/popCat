@@ -139,20 +139,20 @@ bool GameLayer::init()
 	this->addChild(hintScoreNode);
 	hintScoreNode->setVisible(false);
 
-	s_levelLabel = CCLabelTTF::create("关卡","arial", 30);
-	s_levelLabel->setColor(ccc3(255,255,255));
-	s_levelLabel->setPosition(ccp(0-VisibleRect::center().x, VisibleRect::center().y + 50));
-	this->addChild(s_levelLabel);
+	s_bg = CCLayerColor::create(ccc4(0,0,0,204));
+	s_bg->setVisible(false);
+	this->addChild(s_bg);
+	s_hintSprite = CCSprite::create("start_score_hint.png");
+	s_hintSprite->setPosition(ccp(VisibleRect::center().x, 0-VisibleRect::top().y));
+	this->addChild(s_hintSprite);
 
-	s_label = CCLabelTTF::create("", "arial", 30);
-	s_label->setColor(ccc3(255,255,255));
-	s_label->setPosition(ccp(0-VisibleRect::center().x, VisibleRect::center().y));
-	this->addChild(s_label);
+	s_levelLabel = CCLabelBMFont::create("0", "level_font.fnt");
+	s_levelLabel->setPosition(ccp(VisibleRect::center().x, s_hintSprite->getContentSize().height/2 + 70));
+	s_hintSprite->addChild(s_levelLabel);
 
-	s_targetScore = CCLabelTTF::create("", "arial", 30);
-	s_targetScore->setColor(ccc3(255,255,255));
-	s_targetScore->setPosition(ccp(0-VisibleRect::center().x, VisibleRect::center().y - 50));
-	this->addChild(s_targetScore);
+	s_targetScore = CCLabelBMFont::create("0", "score_font.fnt");
+	s_targetScore->setPosition(ccp(VisibleRect::center().x, s_hintSprite->getContentSize().height/2 - 80));
+	s_hintSprite->addChild(s_targetScore);
 
 	CCSprite* pauseNormal = CCSprite::create("pause_button.png");
 	CCSprite* pauseSelected = CCSprite::create("pause_button.png");
@@ -190,17 +190,15 @@ void GameLayer::initLevelState()
 	os<<level;
 	levelStr = levelStr + os.str();
 	levelNode->setString(levelStr.c_str());
-	s_levelLabel->setString(levelStr.c_str());
-	s_levelLabel->setPosition(ccp(0-VisibleRect::center().x, VisibleRect::center().y + 50));
 
-	string label_target = WStrToUTF8(L"目 标 分");
-	s_label->setString(label_target.c_str());
-	s_label->setPosition(ccp(0-VisibleRect::center().x, VisibleRect::center().y));
+	os.str("");
+	os<<level;
+	s_levelLabel->setString(os.str().c_str());
+
 
 	os.str("");
 	os<<targetScore;
 	s_targetScore->setString(os.str().c_str());
-	s_targetScore->setPosition(ccp(0-VisibleRect::center().x, VisibleRect::center().y - 50));
 
 	string targetAndScore = WStrToUTF8(L"目标分 ");
 	targetAndScore = targetAndScore + os.str();
@@ -210,32 +208,29 @@ void GameLayer::initLevelState()
 	os<<currentScore;
 	currentScoreNode->setString(os.str().c_str());
 
-	CCActionInterval* moveIn = CCMoveBy::create(0.5f, ccp(VisibleRect::right().x, 0));
-	CCActionInterval* moveOut = CCMoveBy::create(0.5f, ccp(VisibleRect::right().x, 0));
+	CCActionInterval* moveIn = CCMoveTo::create(0.5f, ccp(VisibleRect::center().x, VisibleRect::center().y));
+	CCActionInterval* moveOut = CCMoveTo::create(0.5f, ccp(VisibleRect::center().x, 0- VisibleRect::top().y));
+	CCActionInterval* fadeIn = CCFadeTo::create(0.5f, 204);
+	CCActionInterval* fadeOut = CCFadeTo::create(0.5f, 0);
 
-	CCActionInterval* moveIn_1 = (CCActionInterval*)moveIn->copy()->autorelease();
-	CCActionInterval* moveOut_1 = (CCActionInterval*)moveOut->copy()->autorelease();
-
-	CCActionInterval* moveIn_2 = (CCActionInterval*)moveIn->copy()->autorelease();
-	CCActionInterval* moveOut_2 = (CCActionInterval*)moveOut->copy()->autorelease();
 
 	CCDelayTime *delay_03 = CCDelayTime::create(0.3f);
-	CCDelayTime *delay_06 = CCDelayTime::create(0.6f);
-	CCDelayTime *delay = CCDelayTime::create(0.5f);
+	CCDelayTime *delay = CCDelayTime::create(2.0f);
 	
-	CCSequence* sq = CCSequence::create(delay_06, moveIn, delay, moveOut, CCCallFunc::create(this, callfunc_selector(GameLayer::initData)), NULL);
-	CCSequence* sq1 = CCSequence::create(delay_03, moveIn_1, CCCA(delay),CCCA(delay_03), moveOut_1, NULL);
-	CCSequence* sq2 = CCSequence::create(moveIn_2, CCCA(delay),CCCA(delay_06), moveOut_2, NULL);
+	CCSequence* sq = CCSequence::create(delay_03, moveIn, delay, moveOut, CCCallFunc::create(this, callfunc_selector(GameLayer::initData)), NULL);
+	CCSequence* sq2 = CCSequence::create(fadeIn, CCCA(delay), CCCA(delay_03), fadeOut, NULL);
 
-	s_targetScore->runAction(sq);
-	s_label->runAction(sq1);
-	s_levelLabel->runAction(sq2);
+	s_hintSprite->runAction(sq);
+	s_bg->setVisible(true);
+	s_bg->setOpacity(0);
+	s_bg->runAction(sq2);
 
 	this->schedule(schedule_selector(GameLayer::initFinished), 3.5f);
 }
 
 void GameLayer::initData()
 {
+	s_bg->setVisible(false);
 	m_content = new CCArray*[boxSize];
 	CCNode* parent = getChildByTag(kNodeTag);
 	parent->removeAllChildren();
@@ -305,7 +300,7 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 					tempCat->setStatus(2);
 					tempCat->removeFromParentAndCleanup(true);
 					//TODO 粒子效果 声音
-					playParticleEffect(ccp(tempCat->x*catSize + catSize/2, tempCat->y*catSize + catSize/2));
+					playParticleEffect(ccp(tempCat->x*catSize + catSize/2, tempCat->y*catSize + catSize/2), tempCat->catColor);
 				}
 				updateContent();
 				updateViewByContent();
@@ -458,7 +453,7 @@ string GameLayer::WStrToUTF8(const wstring& str)
 	return result;
 }
 
-void GameLayer::playParticleEffect(CCPoint point)
+void GameLayer::playParticleEffect(CCPoint point, int type)
 {
 	CCParticleSystemQuad *particle = CCParticleExplosion::create();
 	particle->setTexture(CCTextureCache::sharedTextureCache()->addImage("fire.png"));
@@ -470,7 +465,9 @@ void GameLayer::playParticleEffect(CCPoint point)
 	particle->setSpeedVar(40);
 	particle->setEmissionRate(500);
 	particle->setAutoRemoveOnFinish(true);
-	particle->setStartColor(ccc4f(255,255,255,255));
+	particle->setStartColor(p_colors[type]);
+	particle->setStartColorVar(ccc4f(0.2,0.2,0.2,0));
+	particle->setEndColorVar(ccc4f(0.2,0.2,0.2,0));
 	this->addChild(particle, 10);
 	particle->setPosition(point);
 }
@@ -616,7 +613,7 @@ void GameLayer::removeLeftCat()
 		{
 			Cat* tempCat = (Cat*)pObj;
 			tempCat->removeFromParentAndCleanup(true);
-			playParticleEffect(ccp(tempCat->x*catSize + catSize/2, tempCat->y*catSize + catSize/2));
+			playParticleEffect(ccp(tempCat->x*catSize + catSize/2, tempCat->y*catSize + catSize/2), tempCat->catColor);
 			leftCatNum++;
 		}
 	}
@@ -737,7 +734,7 @@ void GameLayer::pauseCallback(CCObject* pSender)
 	if(!isPause)
 	{
 		PauseLayer* pauselayer = PauseLayer::create();
-		pauselayer->initWithColor(ccc4(0,0,0,128));
+		pauselayer->initWithColor(ccc4(0,0,0,204));
 		CCNode* node = this->getParent();
 		node->addChild(pauselayer);
 		CocosDenshion::SimpleAudioEngine::sharedEngine()->pauseBackgroundMusic();

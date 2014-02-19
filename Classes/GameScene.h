@@ -38,7 +38,7 @@ public:
 
 	string WStrToUTF8(const wstring& str);
 
-	void playParticleEffect(CCPoint point);
+	void playParticleEffect(CCPoint point, int type);
 
 	void updateContent();
 
@@ -74,9 +74,10 @@ private:
 	CCLabelBMFont* currentScoreNode;
 	CCLabelTTF* hintScoreNode;
 
-	CCLabelTTF* s_levelLabel;
-	CCLabelTTF* s_label;
-	CCLabelTTF* s_targetScore;
+	CCSprite* s_hintSprite;
+	CCLayerColor* s_bg;
+	CCLabelBMFont* s_levelLabel;
+	CCLabelBMFont* s_targetScore;
 
 	//CCLabelBMFont* result_label;
 

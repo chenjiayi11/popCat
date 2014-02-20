@@ -20,6 +20,7 @@ CCScene* GameLayer::createScene()
 	scene->addChild(layer);
 
 	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("selected_new.wav");
+
 	return scene;
 }
 
@@ -293,30 +294,25 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 			{
 				// 消除
 				CCObject* obj;
+				int temp_count = 0;
 				CCARRAY_FOREACH(m_selected, obj)
 				{
 					Cat* tempCat = (Cat*)obj;
 					m_content[tempCat->x]->removeObject(tempCat);
 					tempCat->setStatus(2);
-					tempCat->removeFromParentAndCleanup(true);
+					tempCat->explodeQueue(temp_count);
+					temp_count++;
+					/*tempCat->removeFromParentAndCleanup(true);
 					//TODO 粒子效果 声音
-					playParticleEffect(ccp(tempCat->x*catSize + catSize/2, tempCat->y*catSize + catSize/2), tempCat->catColor);
+					playParticleEffect(ccp(tempCat->x*catSize + catSize/2, tempCat->y*catSize + catSize/2), tempCat->catColor);*/
 				}
 				updateContent();
-				updateViewByContent();
-				m_selected->release();
-				m_selected = NULL;
-				hintScoreNode->setVisible(false);
-				if(isGameEnd())
-				{
-					CCDelayTime* delay = CCDelayTime::create(1.8);
-					CCCallFunc* processEndFunc = CCCallFunc::create(this, callfunc_selector(GameLayer::processGameEnd));
-					CCSequence* sequence = CCSequence::create(delay, processEndFunc, NULL);
-					sequence->setTag(SQ_TAG);
-					this->stopActionByTag(SQ_TAG);
-					this->runAction(sequence);
-					pPauseItem->setVisible(false);
-				}
+				updateScore();
+				this->setTouchEnabled(false);
+				CCCallFunc* update_queue = CCCallFunc::create(this, callfunc_selector(GameLayer::updateQueue));
+				CCDelayTime* delay = CCDelayTime::create(explosion_interval*temp_count);
+				CCSequence* temp_sq = CCSequence::create(delay, update_queue, NULL);
+				this->runAction(temp_sq);
 				return;
 			}else
 			{
@@ -468,9 +464,23 @@ void GameLayer::playParticleEffect(CCPoint point, int type)
 	particle->setStartColor(p_colors[type]);
 	particle->setStartColorVar(ccc4f(0.2,0.2,0.2,0));
 	particle->setEndColorVar(ccc4f(0.2,0.2,0.2,0));
-	this->addChild(particle, 10);
+	this->addChild(particle);
 	particle->setPosition(point);
+	//CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("explosion.mp3");
 }
+void GameLayer::updateScore()
+{
+	if(m_times == 0)
+	{
+		schedule(schedule_selector(GameLayer::stepForScore));
+	}else
+	{
+		m_times = 0;
+		unschedule(schedule_selector(GameLayer::stepForScore));
+		schedule(schedule_selector(GameLayer::stepForScore));
+	}
+}
+
 void GameLayer::updateContent()
 {
 	justScore = currentScore;
@@ -509,16 +519,6 @@ void GameLayer::updateContent()
 
 void GameLayer::updateViewByContent()
 {
-	if(m_times == 0)
-	{
-		schedule(schedule_selector(GameLayer::stepForScore));
-	}else
-	{
-		m_times = 0;
-		unschedule(schedule_selector(GameLayer::stepForScore));
-		schedule(schedule_selector(GameLayer::stepForScore));
-	}
-	
 	if(m_content == NULL)
 	{
 		return;
@@ -541,6 +541,25 @@ void GameLayer::updateViewByContent()
 				j++;
 			}
 		}
+	}
+	this->setTouchEnabled(true);
+}
+
+void GameLayer::updateQueue()
+{
+	updateViewByContent();
+	m_selected->release();
+	m_selected = NULL;
+	hintScoreNode->setVisible(false);
+	if(isGameEnd())
+	{
+		CCDelayTime* delay = CCDelayTime::create(1.8);
+		CCCallFunc* processEndFunc = CCCallFunc::create(this, callfunc_selector(GameLayer::processGameEnd));
+		CCSequence* sequence = CCSequence::create(delay, processEndFunc, NULL);
+		sequence->setTag(SQ_TAG);
+		this->stopActionByTag(SQ_TAG);
+		this->runAction(sequence);
+		pPauseItem->setVisible(false);
 	}
 }
 
@@ -612,8 +631,9 @@ void GameLayer::removeLeftCat()
 		CCARRAY_FOREACH(m_content[i], pObj)
 		{
 			Cat* tempCat = (Cat*)pObj;
-			tempCat->removeFromParentAndCleanup(true);
-			playParticleEffect(ccp(tempCat->x*catSize + catSize/2, tempCat->y*catSize + catSize/2), tempCat->catColor);
+			/*tempCat->removeFromParentAndCleanup(true);
+			playParticleEffect(ccp(tempCat->x*catSize + catSize/2, tempCat->y*catSize + catSize/2), tempCat->catColor);*/
+			tempCat->explodeQueue(leftCatNum);
 			leftCatNum++;
 		}
 	}
@@ -635,7 +655,7 @@ void GameLayer::removeLeftCat()
 	{
 		justScore = currentScore;
 		currentScore = currentScore + getScoreByLeftNum(leftCatNum);
-		updateViewByContent();
+		updateScore();
 	}
 	
 }

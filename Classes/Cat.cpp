@@ -1,5 +1,5 @@
 #include "Cat.h"
-#include "draw_nodes/CCDrawingPrimitives.h"
+#include "AppMacros.h"
 
 USING_NS_CC;
 
@@ -22,6 +22,7 @@ Cat* Cat::CreateWithNum(int num)
 void Cat::initCache()
 {
 	cache->addSpriteFramesWithFile("my_cats.plist");
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("explosion.mp3");
 }
 
 void Cat::setXandY(int ax, int ay)
@@ -74,4 +75,38 @@ void Cat::setStatus(int s)
 		this->setDisplayFrame(cache->spriteFrameByName(string));
 		break;
 	}
+}
+
+void Cat::playParticleEffect()
+{
+	CCParticleSystemQuad *particle = CCParticleExplosion::create();
+	particle->setTexture(CCTextureCache::sharedTextureCache()->addImage("fire.png"));
+	particle->setDuration(0.3f);
+	particle->setGravity(ccp(0,-100));
+	particle->setLifeVar(0);
+	particle->setLife(1.0f);
+	particle->setSpeed(100);
+	particle->setSpeedVar(40);
+	particle->setEmissionRate(500);
+	particle->setAutoRemoveOnFinish(true);
+	particle->setStartColor(p_colors[catColor]);
+	particle->setStartColorVar(ccc4f(0.2,0.2,0.2,0));
+	particle->setEndColorVar(ccc4f(0.2,0.2,0.2,0));
+	CCNode* node = this->getParent()->getParent();
+	node->addChild(particle);
+	particle->setPosition(ccp(x*catSize + catSize/2,y*catSize + catSize/2));
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("explosion.mp3");
+	this->removeFromParentAndCleanup(true);
+}
+
+void Cat::explodeQueue(int n)
+{
+	if(n > 15)
+	{
+		n = 15;
+	}
+	CCDelayTime *delay = CCDelayTime::create(explosion_interval*n);
+	CCCallFunc* playEffect = CCCallFunc::create(this, callfunc_selector(Cat::playParticleEffect));
+	CCSequence* sq = CCSequence::create(delay, playEffect, NULL);
+	this->runAction(sq);
 }

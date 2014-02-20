@@ -202,7 +202,10 @@ obj/local/armeabi/objs/popCat_shared/__/__/Classes/Cat.o: \
  /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../cocos2dx/CCScheduler.h \
  /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../cocos2dx/support/data_support/uthash.h \
  /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../cocos2dx/support/component/CCComponent.h \
- /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../cocos2dx/support/component/CCComponentContainer.h
+ /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../cocos2dx/support/component/CCComponentContainer.h \
+ /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../CocosDenshion/android/../include/SimpleAudioEngine.h \
+ /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../CocosDenshion/android/../include/Export.h \
+ jni/../../Classes/AppMacros.h
 
 jni/../../Classes/Cat.h:
 
@@ -611,3 +614,9 @@ jni/../../Classes/Cat.h:
 /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../cocos2dx/support/component/CCComponent.h:
 
 /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../cocos2dx/support/component/CCComponentContainer.h:
+
+/cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../CocosDenshion/android/../include/SimpleAudioEngine.h:
+
+/cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../CocosDenshion/android/../include/Export.h:
+
+jni/../../Classes/AppMacros.h:

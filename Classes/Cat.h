@@ -1,6 +1,8 @@
 #ifndef __CAT_H_
 #define __CAT_H_
 #include "cocos2d.h"
+#include "SimpleAudioEngine.h"
+
 USING_NS_CC;
 enum
 {
@@ -24,6 +26,9 @@ public:
 
 	virtual void setToSelected(bool b);
 	virtual void setStatus(int s);
+
+	void playParticleEffect();
+	void explodeQueue(int n);
 
 	int catColor;
 	int x;

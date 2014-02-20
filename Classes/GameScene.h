@@ -40,9 +40,13 @@ public:
 
 	void playParticleEffect(CCPoint point, int type);
 
+	void updateScore();
+
 	void updateContent();
 
 	void updateViewByContent();
+
+	void updateQueue();
 
 	void stepForScore(float dt);
 

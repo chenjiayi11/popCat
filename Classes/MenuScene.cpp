@@ -56,7 +56,7 @@ bool GameMenu::init()
 	menuPH->setVisible(false);
 
 	this->addChild(menu);
-
+	this->setKeypadEnabled(true);
 	return true;
 }
 
@@ -77,6 +77,14 @@ void GameMenu::onEnterTransitionDidFinish()
 	topSprite->runAction(scale_out);
 	menuStart->runAction(sq1);
 	menuPH->runAction(sq2);
+}
+
+void GameMenu::keyBackClicked()
+{
+	CCDirector::sharedDirector()->end();
+#if(CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+	exit(0);
+#endif
 }
 
 void GameMenu::menuStartCallback(CCObject* pSender)

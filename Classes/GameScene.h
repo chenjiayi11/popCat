@@ -26,6 +26,8 @@ public:
 
 	virtual void ccTouchesEnded(CCSet *pTouches, CCEvent *pEvent);
 
+	virtual void keyBackClicked();
+
 	void initLevelState();
 
 	void initData();

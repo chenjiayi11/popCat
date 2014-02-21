@@ -11,6 +11,8 @@ public:
 
 	virtual void onEnterTransitionDidFinish();
 
+	virtual void keyBackClicked();
+
 	static CCScene* createScene();
 
 	void menuStartCallback(CCObject* pSender);

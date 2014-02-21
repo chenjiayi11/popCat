@@ -81,13 +81,14 @@ void Cat::playParticleEffect()
 {
 	CCParticleSystemQuad *particle = CCParticleExplosion::create();
 	particle->setTexture(CCTextureCache::sharedTextureCache()->addImage("fire.png"));
-	particle->setDuration(0.3f);
+	particle->setDuration(0.1f);
 	particle->setGravity(ccp(0,-100));
 	particle->setLifeVar(0);
 	particle->setLife(1.0f);
 	particle->setSpeed(100);
 	particle->setSpeedVar(40);
-	particle->setEmissionRate(500);
+	particle->setEmissionRate(1000);
+	particle->setTotalParticles(100);
 	particle->setAutoRemoveOnFinish(true);
 	particle->setStartColor(p_colors[catColor]);
 	particle->setStartColorVar(ccc4f(0.2,0.2,0.2,0));

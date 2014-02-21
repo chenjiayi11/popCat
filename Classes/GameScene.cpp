@@ -226,7 +226,7 @@ void GameLayer::initLevelState()
 	s_bg->setOpacity(0);
 	s_bg->runAction(sq2);
 
-	this->schedule(schedule_selector(GameLayer::initFinished), 3.5f);
+	this->schedule(schedule_selector(GameLayer::initFinished), 4.5f);
 }
 
 void GameLayer::initData()
@@ -265,6 +265,7 @@ void GameLayer::initData()
 void GameLayer::initFinished(float dt)
 {
 	this->setTouchEnabled(true);
+	this->setKeypadEnabled(true);
 	this->unschedule(schedule_selector(GameLayer::initFinished));
 	pPauseItem->setVisible(true);
 	topNode->setPosition(ccp(0, VisibleRect::top().y));
@@ -374,6 +375,11 @@ void GameLayer::ccTouchesEnded(CCSet *pTouches, CCEvent *pEvent)
 {
 }
 
+void GameLayer::keyBackClicked()
+{
+	pauseCallback(this);
+}
+
 void GameLayer::popCat(CCObject* object, CCArray* array)
 {
 	array->addObject(object);
@@ -453,13 +459,14 @@ void GameLayer::playParticleEffect(CCPoint point, int type)
 {
 	CCParticleSystemQuad *particle = CCParticleExplosion::create();
 	particle->setTexture(CCTextureCache::sharedTextureCache()->addImage("fire.png"));
-	particle->setDuration(0.3f);
+	particle->setDuration(0.1f);
 	particle->setGravity(ccp(0,-100));
 	particle->setLifeVar(0);
 	particle->setLife(1.0f);
 	particle->setSpeed(100);
 	particle->setSpeedVar(40);
-	particle->setEmissionRate(500);
+	particle->setEmissionRate(1000);
+	particle->setTotalParticles(100);
 	particle->setAutoRemoveOnFinish(true);
 	particle->setStartColor(p_colors[type]);
 	particle->setStartColorVar(ccc4f(0.2,0.2,0.2,0));
@@ -560,6 +567,7 @@ void GameLayer::updateQueue()
 		this->stopActionByTag(SQ_TAG);
 		this->runAction(sequence);
 		pPauseItem->setVisible(false);
+		this->setKeypadEnabled(false);
 	}
 }
 
@@ -679,20 +687,13 @@ void GameLayer::processGameEnd()
 	this->setTouchEnabled(false);
 
 	CCDelayTime *delay = CCDelayTime::create(1.5f);
+	CCDelayTime *delay1 = CCDelayTime::create(2.5f);
 	CCCallFunc* processCat = CCCallFunc::create(this, callfunc_selector(GameLayer::processLeftCat));
 	CCCallFunc* removeCat = CCCallFunc::create(this, callfunc_selector(GameLayer::removeLeftCat));
 
 	CCCallFunc* gameEnd = CCCallFunc::create(this, callfunc_selector(GameLayer::gameEndCallback));
 
-	/*CCActionInterval* moveIn = CCMoveTo::create(0.4f, VisibleRect::center());
-	CCActionInterval* moveOut = CCMoveTo::create(0.4f, ccp(VisibleRect::center().x, 
-		VisibleRect::top().y + result_label->getContentSize().height));*/
-	
-	/*CCSequence* sq = CCSequence::create(delay1, processCat, delay, removeCat, CCCA(delay1), 
-		moveIn, CCCA(delay), moveOut, CCCA(delay), initLevel, NULL);
-	result_label->runAction(sq);*/
-
-	CCSequence* sq = CCSequence::create(processCat, delay, removeCat, CCCA(delay), gameEnd, NULL);
+	CCSequence* sq = CCSequence::create(processCat, delay, removeCat, delay1, gameEnd, NULL);
 	this->runAction(sq);
 
 	CCDelayTime* delay2 = CCDelayTime::create(3.0f);

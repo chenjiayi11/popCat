@@ -20,7 +20,7 @@ CCScene* GameLayer::createScene()
 
 	scene->addChild(layer);
 
-	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("selected_new.wav");
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("selected_new.mp3");
 
 	return scene;
 }
@@ -230,6 +230,7 @@ void GameLayer::initLevelState()
 	progressBar->setPercentage(currentScore*100*PERCENTAGE/targetScore);
 	progressEndOff->setVisible(true);
 	progressEndOn->setVisible(false);
+	spark->setVisible(false);
 	int tempP;
 	if(progressBar->getPercentage() < PERCENTAGE*100)
 	{
@@ -377,7 +378,7 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 				}
 
 				//选中音效
-				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("selected_new.wav");
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("selected_new.mp3");
 				int n = m_selected->count();
 				char string[50] = {0};
 				sprintf(string, "%d cats %d points", n, getScoreByNum(n));

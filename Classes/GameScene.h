@@ -73,12 +73,17 @@ public:
 private:
 	CCMenuItemSprite *pPauseItem;
 	CCNode* topNode;
-
-	CCLabelTTF* highestScoreNode;
-	CCLabelTTF* targetScoreNode;
-	CCLabelTTF* levelNode;
+	CCLabelBMFont* targetScoreNode;
+	CCLabelBMFont* levelNode;
 	CCLabelBMFont* currentScoreNode;
-	CCLabelTTF* hintScoreNode;
+	CCSprite* progressBg;
+	CCProgressTimer* progressBar;
+	CCSprite* progressEndOff;
+	CCSprite* progressEndOn;
+	CCSprite* spark;
+
+	CCLabelBMFont* hintScoreNode;
+	CCLabelBMFont* leftScoreHint;
 
 	CCSprite* s_hintSprite;
 	CCLayerColor* s_bg;

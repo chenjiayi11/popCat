@@ -10,6 +10,7 @@ enum{
 };
 #define SCORE_KEY "highest_score"
 #define SQ_TAG 18
+#define PERCENTAGE 0.77
 
 CCScene* GameLayer::createScene()
 {
@@ -77,8 +78,6 @@ bool GameLayer::init()
 
 	CCSpriteBatchNode* node = CCSpriteBatchNode::create("my_cats.png");
 	this->addChild(node, -1, kNodeTag);
-	/*Cat::cache = CCSpriteFrameCache::sharedSpriteFrameCache();
-	Cat::cache->addSpriteFramesWithFile("my_cats.plist");*/
 	Cat::initCache();
 
 	m_times = 0;
@@ -92,12 +91,11 @@ bool GameLayer::init()
 	//top label
 	topNode = CCSprite::create("top_node_bg.png");
 	int topNodeH = topNode->getContentSize().height;
-	int line1P = 0.75 * topNodeH;
 	topNode->setAnchorPoint(ccp(0,0));
 	topNode->setPosition(ccp(0,VisibleRect::top().y-topNodeH));
 	this->addChild(topNode);
 
-	highestScoreNode = CCLabelTTF::create("最高分","arial", 24);
+	/*highestScoreNode = CCLabelTTF::create("最高分","arial", 24);
 	highestScoreNode->setColor(ccc3(255,255,255));
 	string highestStr = WStrToUTF8(L"最高分 ");
 	ostringstream os;
@@ -105,40 +103,62 @@ bool GameLayer::init()
 	highestStr = highestStr + os.str();
 	highestScoreNode->setString(highestStr.c_str());
 	highestScoreNode->setPosition(ccp(highestScoreNode->getContentSize().width/2 + 10, line1P));
-	topNode->addChild(highestScoreNode);
+	topNode->addChild(highestScoreNode);*/
 
-	targetScoreNode = CCLabelTTF::create("目标分","arial", 24);
-	targetScoreNode->setColor(ccc3(255,255,255));
-	string targetStr = WStrToUTF8(L"目标分 ");
-	os.str("");
+	targetScoreNode = CCLabelBMFont::create("","score_font.fnt");
+	ostringstream os;
 	os<<targetScore;
-	targetStr = targetStr + os.str();
-	targetScoreNode->setString(targetStr.c_str());
-	targetScoreNode->setPosition(ccp(VisibleRect::center().x, line1P));
+	targetScoreNode->setScale(0.6);
+	targetScoreNode->setString(os.str().c_str());
+	targetScoreNode->setPosition(ccp(85 + targetScoreNode->getContentSize().width/2, 47-targetScoreNode->getContentSize().height/2));
 	topNode->addChild(targetScoreNode);
 
-	levelNode = CCLabelTTF::create("关卡","arial", 24);
-	levelNode->setColor(ccc3(70,201,220)); //46c9dc
-	string levelStr = WStrToUTF8(L"关卡 ");
+	levelNode = CCLabelBMFont::create("","shadow_font.fnt");
 	os.str("");
 	os<<level;
-	levelStr = levelStr + os.str();
-	levelNode->setString(levelStr.c_str());
-	levelNode->setPosition(ccp(VisibleRect::right().x*3/4,line1P));
+	levelNode->setString(os.str().c_str());
+	levelNode->setPosition(ccp(30+levelNode->getContentSize().width/2,topNode->getContentSize().height - 8 - levelNode->getContentSize().height/2));
 	topNode->addChild(levelNode);
 
-	currentScoreNode = CCLabelBMFont::create("0", "bitmapFontTest.fnt");
-	currentScoreNode->setPosition(ccp(VisibleRect::center().x, currentScoreNode->getContentSize().height/2 + 5));
+	currentScoreNode = CCLabelBMFont::create("0", "shadow_font.fnt");
+	currentScoreNode->setPosition(ccp(183, 82-currentScoreNode->getContentSize().height/2));
 	topNode->addChild(currentScoreNode);
 
-	hintScoreNode = CCLabelTTF::create();
-	hintScoreNode->setColor(ccc3(255,255,255));
-	hintScoreNode->setFontName("arial");
-	hintScoreNode->setFontSize(20);
-	hintScoreNode->setString("n blocks 5*n*n points");
+	progressBg = CCSprite::create("progress_bg.png");
+	progressBg->setAnchorPoint(ccp(0,1));
+	progressBg->setPosition(ccp(183,41));
+	topNode->addChild(progressBg);
+	progressBar = CCProgressTimer::create(CCSprite::create("progress_bar.png"));
+	progressBar->setType(kCCProgressTimerTypeBar);
+	progressBar->setBarChangeRate(ccp(1,0));
+	progressBar->setMidpoint(ccp(0,0));
+	progressBar->setAnchorPoint(ccp(0,1));
+	progressBar->setPosition(ccp(183,41));
+	progressBar->setPercentage(0);
+	topNode->addChild(progressBar);
+	spark = CCSprite::create("progress_spark.png");
+	spark->setPosition(ccp(183,29));
+	spark->setVisible(false);
+	topNode->addChild(spark);
+	progressEndOff = CCSprite::create("progress_end_off.png");
+	progressEndOff->setAnchorPoint(ccp(0,1));
+	progressEndOff->setPosition(ccp(463,41));
+	topNode->addChild(progressEndOff);
+	progressEndOn = CCSprite::create("progress_end_on.png");
+	progressEndOn->setAnchorPoint(ccp(0,1));
+	progressEndOn->setPosition(ccp(463,41));
+	topNode->addChild(progressEndOn);
+	progressEndOn->setVisible(false);
+
+	hintScoreNode = CCLabelBMFont::create("", "shadow_font.fnt");
+	hintScoreNode->setString("n cats 5*n*n points");
 	hintScoreNode->setPosition(ccp(VisibleRect::center().x, VisibleRect::top().y - 120));
 	this->addChild(hintScoreNode);
 	hintScoreNode->setVisible(false);
+	leftScoreHint = CCLabelBMFont::create("", "shadow_font.fnt");
+	leftScoreHint->setPosition(ccp(VisibleRect::center().x, VisibleRect::center().y));
+	this->addChild(leftScoreHint);
+	leftScoreHint->setVisible(false);
 
 	s_bg = CCLayerColor::create(ccc4(0,0,0,204));
 	s_bg->setVisible(false);
@@ -163,11 +183,12 @@ bool GameLayer::init()
 
 	CCMenu* pMenu = CCMenu::create(pPauseItem, NULL);
 	pMenu->setPosition(CCPointZero);
-	pPauseItem->setPosition(ccp(VisibleRect::right().x-50,60));
+
+	pPauseItem->setPosition(ccp(592, 41));
 	topNode->addChild(pMenu);
 
 	topNode->setVisible(false);
-	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("Cat_BGM_Sketch_1.mp3", true);
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("Cat_BGM_Sketch_2.mp3", true);
 	return true;
 }
 
@@ -183,14 +204,12 @@ void GameLayer::initLevelState()
 		ostringstream tos;
 		tos<<highestScore;
 		highestStr = highestStr + tos.str();
-		highestScoreNode->setString(highestStr.c_str());
+		//highestScoreNode->setString(highestStr.c_str());
 	}
 
 	ostringstream os;
-	string levelStr = WStrToUTF8(L"关 卡 ");
 	os<<level;
-	levelStr = levelStr + os.str();
-	levelNode->setString(levelStr.c_str());
+	levelNode->setString(os.str().c_str());
 
 	os.str("");
 	os<<level;
@@ -201,13 +220,26 @@ void GameLayer::initLevelState()
 	os<<targetScore;
 	s_targetScore->setString(os.str().c_str());
 
-	string targetAndScore = WStrToUTF8(L"目标分 ");
-	targetAndScore = targetAndScore + os.str();
-	targetScoreNode->setString(targetAndScore.c_str());
+	targetScoreNode->setString(os.str().c_str());
 
 	os.str("");
 	os<<currentScore;
 	currentScoreNode->setString(os.str().c_str());
+
+	//更新进度条
+	progressBar->setPercentage(currentScore*100*PERCENTAGE/targetScore);
+	progressEndOff->setVisible(true);
+	progressEndOn->setVisible(false);
+	int tempP;
+	if(progressBar->getPercentage() < PERCENTAGE*100)
+	{
+		tempP = progressBar->getContentSize().width*progressBar->getPercentage()/100;
+	}else
+	{
+		tempP = progressBar->getContentSize().width*PERCENTAGE;
+	}
+	currentScoreNode->setPosition(ccp(183+tempP, 82-currentScoreNode->getContentSize().height/2));
+	
 
 	CCActionInterval* moveIn = CCMoveTo::create(0.5f, ccp(VisibleRect::center().x, VisibleRect::center().y));
 	CCActionInterval* moveOut = CCMoveTo::create(0.5f, ccp(VisibleRect::center().x, 0- VisibleRect::top().y));
@@ -348,10 +380,10 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("selected_new.wav");
 				int n = m_selected->count();
 				char string[50] = {0};
-				sprintf(string, "%d blocks %d points", n, getScoreByNum(n));
+				sprintf(string, "%d cats %d points", n, getScoreByNum(n));
 				hintScoreNode->setString(string);
 				hintScoreNode->setScale(0.5f);
-				CCActionInterval* scale = CCScaleTo::create(0.4f, 1.5f);
+				CCActionInterval* scale = CCScaleTo::create(0.4f, 1.0f);
 				CCActionInterval* scale_ease_out = CCEaseElasticOut::create(((CCActionInterval*)scale->copy()->autorelease()));
 				hintScoreNode->setVisible(true);
 				hintScoreNode->runAction(scale_ease_out);
@@ -473,7 +505,6 @@ void GameLayer::playParticleEffect(CCPoint point, int type)
 	particle->setEndColorVar(ccc4f(0.2,0.2,0.2,0));
 	this->addChild(particle);
 	particle->setPosition(point);
-	//CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("explosion.mp3");
 }
 void GameLayer::updateScore()
 {
@@ -486,6 +517,19 @@ void GameLayer::updateScore()
 		unschedule(schedule_selector(GameLayer::stepForScore));
 		schedule(schedule_selector(GameLayer::stepForScore));
 	}
+
+	//增长进度条
+	int score_percent = currentScore*100*PERCENTAGE/targetScore;
+	if(score_percent > 100)
+	{
+		score_percent = 100;
+	}
+	if(progressBar->getPercentage() < 100)
+	{
+		CCProgressTo* action = CCProgressTo::create(1, score_percent);
+		progressBar->runAction(action);
+	}
+	
 }
 
 void GameLayer::updateContent()
@@ -595,6 +639,28 @@ void GameLayer::stepForScore(float dt)
 	char string[12] = {0};
 	sprintf(string, "%d", score);
 	currentScoreNode->setString(string);
+
+	//顶部进度条刷新
+	if(score >= targetScore)
+	{
+		progressEndOff->setVisible(false);
+		progressEndOn->setVisible(true);
+	}
+	if(progressBar->getPercentage()<100)
+	{
+		spark->setVisible(true);
+	}else
+	{
+		spark->setVisible(false);
+	}
+	int tempP = progressBar->getContentSize().width*progressBar->getPercentage()/100;
+	spark->setPosition(ccp(183+tempP, 29));
+	if(tempP > progressBar->getContentSize().width*PERCENTAGE)
+	{
+		tempP = progressBar->getContentSize().width*PERCENTAGE;
+	}
+	currentScoreNode->setPosition(ccp(183+tempP, 82-currentScoreNode->getContentSize().height/2));
+
 	if(m_times == 60)
 	{
 		unschedule(schedule_selector(GameLayer::stepForScore));
@@ -665,11 +731,11 @@ void GameLayer::removeLeftCat()
 		currentScore = currentScore + getScoreByLeftNum(leftCatNum);
 		updateScore();
 	}
-	
 }
 
 void GameLayer::processLeftCat()
 {
+	int leftCatNum = 0;
 	for(int i=0; i<boxSize; i++)
 	{
 		CCObject* pObj;
@@ -677,7 +743,26 @@ void GameLayer::processLeftCat()
 		{
 			Cat* tempCat = (Cat*)pObj;
 			tempCat->setStatus(3);
+			leftCatNum++;
 		}
+	}
+
+	//根据剩下猫的个数提示分数
+	if(leftCatNum < 10)
+	{
+		
+		char string[50] = {0};
+		sprintf(string, "left %d bounds %d", leftCatNum, getScoreByLeftNum(leftCatNum));
+		leftScoreHint->setString(string);
+		leftScoreHint->setScale(0.5f);
+		CCActionInterval* scale = CCScaleTo::create(0.4f, 1.0f);
+		CCActionInterval* scale_ease_out = CCEaseElasticOut::create(((CCActionInterval*)scale->copy()->autorelease()));
+		CCFadeOut* fadeOut = CCFadeOut::create(0.4f);
+		CCDelayTime* delay = CCDelayTime::create(2.0f);
+		leftScoreHint->setOpacity(255);
+		leftScoreHint->setVisible(true);
+		CCSequence* sequence = CCSequence::create(scale_ease_out, delay, fadeOut, NULL);
+		leftScoreHint->runAction(sequence);
 	}
 }
 
@@ -927,7 +1012,7 @@ bool GameEndLayer::init()
 	}else
 	{
 		//显示分数
-		CCLabelBMFont* scoreLabel = CCLabelBMFont::create("0", "bitmapFontTest.fnt");
+		CCLabelBMFont* scoreLabel = CCLabelBMFont::create("0", "shadow_font.fnt");
 		char string[12] = {0};
 		sprintf(string, "%d", result_score);
 		scoreLabel->setString(string);

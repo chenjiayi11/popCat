@@ -95,16 +95,6 @@ bool GameLayer::init()
 	topNode->setPosition(ccp(0,VisibleRect::top().y-topNodeH));
 	this->addChild(topNode);
 
-	/*highestScoreNode = CCLabelTTF::create("最高分","arial", 24);
-	highestScoreNode->setColor(ccc3(255,255,255));
-	string highestStr = WStrToUTF8(L"最高分 ");
-	ostringstream os;
-	os<<highestScore;
-	highestStr = highestStr + os.str();
-	highestScoreNode->setString(highestStr.c_str());
-	highestScoreNode->setPosition(ccp(highestScoreNode->getContentSize().width/2 + 10, line1P));
-	topNode->addChild(highestScoreNode);*/
-
 	targetScoreNode = CCLabelBMFont::create("","score_font.fnt");
 	ostringstream os;
 	os<<targetScore;
@@ -335,10 +325,12 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 					m_content[tempCat->x]->removeObject(tempCat);
 					tempCat->setStatus(2);
 					tempCat->explodeQueue(temp_count);
+					tempCat->effectDisplay(m_selected->count());
 					temp_count++;
-					/*tempCat->removeFromParentAndCleanup(true);
-					//TODO 粒子效果 声音
-					playParticleEffect(ccp(tempCat->x*catSize + catSize/2, tempCat->y*catSize + catSize/2), tempCat->catColor);*/
+				}
+				if(m_selected->count()>=10)
+				{
+					perfectDisplay();
 				}
 				updateContent();
 				updateScore();
@@ -488,25 +480,6 @@ string GameLayer::WStrToUTF8(const wstring& str)
 	return result;
 }
 
-void GameLayer::playParticleEffect(CCPoint point, int type)
-{
-	CCParticleSystemQuad *particle = CCParticleExplosion::create();
-	particle->setTexture(CCTextureCache::sharedTextureCache()->addImage("fire.png"));
-	particle->setDuration(0.1f);
-	particle->setGravity(ccp(0,-100));
-	particle->setLifeVar(0);
-	particle->setLife(1.0f);
-	particle->setSpeed(100);
-	particle->setSpeedVar(40);
-	particle->setEmissionRate(1000);
-	particle->setTotalParticles(100);
-	particle->setAutoRemoveOnFinish(true);
-	particle->setStartColor(p_colors[type]);
-	particle->setStartColorVar(ccc4f(0.2,0.2,0.2,0));
-	particle->setEndColorVar(ccc4f(0.2,0.2,0.2,0));
-	this->addChild(particle);
-	particle->setPosition(point);
-}
 void GameLayer::updateScore()
 {
 	if(m_times == 0)
@@ -706,8 +679,6 @@ void GameLayer::removeLeftCat()
 		CCARRAY_FOREACH(m_content[i], pObj)
 		{
 			Cat* tempCat = (Cat*)pObj;
-			/*tempCat->removeFromParentAndCleanup(true);
-			playParticleEffect(ccp(tempCat->x*catSize + catSize/2, tempCat->y*catSize + catSize/2), tempCat->catColor);*/
 			tempCat->explodeQueue(leftCatNum);
 			leftCatNum++;
 		}
@@ -852,6 +823,74 @@ void GameLayer::pauseCallback(CCObject* pSender)
 		this->addChild(endlayer);
 		isPause = true;*/
 	}
+}
+
+void GameLayer::perfectDisplay()
+{
+	CCSprite* bg = CCSprite::create("perfect_run_bg.png");
+	bg->setPosition(ccp(VisibleRect::center().x, VisibleRect::top().y-150));
+	this->addChild(bg);
+	for(int i=0; i<5;i++)
+	{
+		CCSprite* temp = CCSprite::create("perfect_run.png");
+		float scale;
+		int actualY;
+		if(i%2>0)
+		{
+			scale = 1.0f;
+			switch (i)
+			{
+			case 1:
+				actualY = 50;
+				break;
+			case 3:
+				actualY = 42;
+				break;
+			default:
+				actualY = 40;
+				break;
+			}
+		}else
+		{
+			switch (i)
+			{
+			case 0:
+				scale = 0.6f;
+				actualY = 77;
+				break;
+			case 2:
+				scale = 0.8f;
+				actualY = 90;
+				break;
+			case 4:
+				scale = 0.7f;
+				actualY = 85;
+				break;
+			default:
+				scale = 0.8f;
+				actualY = 90;
+				break;
+			}
+			
+		}
+		temp->setScale(scale);
+		temp->setPosition(ccp(VisibleRect::right().x+84, actualY));
+		bg->addChild(temp);
+		CCMoveTo* move = CCMoveTo::create(0.8f, ccp(0-84, actualY));
+		CCDelayTime* delay = CCDelayTime::create(0.127*i);
+		CCFiniteTimeAction* runFinished = CCCallFuncN::create(this, callfuncN_selector(GameLayer::perfectRunFinished));
+		temp->runAction(CCSequence::create(delay, move, runFinished, NULL));
+	}
+	CCFiniteTimeAction* finished = CCCallFuncN::create(this, callfuncN_selector(GameLayer::perfectRunFinished));
+	CCDelayTime* delay2 = CCDelayTime::create(1.2);
+	CCFadeOut* fadeout = CCFadeOut::create(0.3);
+	bg->runAction(CCSequence::create(delay2, fadeout, finished, NULL));
+}
+
+void GameLayer::perfectRunFinished(CCNode* sender)
+{
+	CCSprite* sprite = (CCSprite*)sender;
+	sprite->removeFromParent();
 }
 
 bool PauseLayer::init()

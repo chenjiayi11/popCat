@@ -40,8 +40,6 @@ public:
 
 	string WStrToUTF8(const wstring& str);
 
-	void playParticleEffect(CCPoint point, int type);
-
 	void updateScore();
 
 	void updateContent();
@@ -67,6 +65,10 @@ public:
 	void gameEndCallback();
 
 	void pauseCallback(CCObject* pSender);
+
+	void perfectDisplay();
+
+	void perfectRunFinished(CCNode* sender);
 
 	CREATE_FUNC(GameLayer);
 

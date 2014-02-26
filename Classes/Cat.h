@@ -30,6 +30,9 @@ public:
 	void playParticleEffect();
 	void explodeQueue(int n);
 
+	void effectDisplay(int n);
+	void effectDisplayFinished(cocos2d::CCNode* sender);
+
 	int catColor;
 	int x;
 	int y;

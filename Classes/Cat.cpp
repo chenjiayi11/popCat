@@ -111,3 +111,38 @@ void Cat::explodeQueue(int n)
 	CCSequence* sq = CCSequence::create(delay, playEffect, NULL);
 	this->runAction(sq);
 }
+
+void Cat::effectDisplay(int n)
+{
+	if(n < 5)
+	{
+		return;
+	}
+	CCSprite* esp;
+	if(n >= 10)
+	{
+		esp = CCSprite::create("perfect.png");
+	}else if (n >= 8)
+	{
+		esp = CCSprite::create("cool.png");
+	}else
+	{
+		esp = CCSprite::create("good.png");
+	}
+	esp->setPosition(ccp(x*catSize + catSize/2,y*catSize + catSize));
+	CCNode* node = this->getParent()->getParent();
+	node->addChild(esp);
+
+	CCMoveBy* move = CCMoveBy::create(0.6f, ccp(0, 20));
+	CCFadeTo* fadeTo = CCFadeTo::create(0.6f, 88);
+	CCSpawn* spawn = CCSpawn::createWithTwoActions(move, fadeTo);
+	CCFiniteTimeAction* effectFinished = CCCallFuncN::create(this, callfuncN_selector(Cat::effectDisplayFinished));
+
+	esp->runAction(CCSequence::create(spawn,effectFinished, NULL));
+}
+
+void Cat::effectDisplayFinished(CCNode* sender)
+{
+	CCSprite* sprite = (CCSprite*)sender;
+	sprite->removeFromParent();
+}

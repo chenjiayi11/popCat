@@ -20,7 +20,7 @@ CCScene* GameLayer::createScene()
 
 	scene->addChild(layer);
 
-	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("selected_new.mp3");
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("selected.wav");
 
 	return scene;
 }
@@ -370,7 +370,7 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 				}
 
 				//选中音效
-				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("selected_new.mp3");
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("selected.wav");
 				int n = m_selected->count();
 				char string[50] = {0};
 				sprintf(string, "%d cats %d points", n, getScoreByNum(n));

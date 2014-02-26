@@ -22,7 +22,7 @@ Cat* Cat::CreateWithNum(int num)
 void Cat::initCache()
 {
 	cache->addSpriteFramesWithFile("my_cats.plist");
-	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("explosion_new.mp3");
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("explosion.mp3");
 }
 
 void Cat::setXandY(int ax, int ay)
@@ -96,7 +96,7 @@ void Cat::playParticleEffect()
 	CCNode* node = this->getParent()->getParent();
 	node->addChild(particle);
 	particle->setPosition(ccp(x*catSize + catSize/2,y*catSize + catSize/2));
-	CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("explosion_new.mp3");
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("explosion.mp3");
 	this->removeFromParentAndCleanup(true);
 }
 

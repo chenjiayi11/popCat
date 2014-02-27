@@ -2,6 +2,8 @@
 #include "VisibleRect.h"
 #include "GameScene.h"
 
+#define GUIDE_KEY "has_guide"
+
 CCScene* GameMenu::createScene()
 {
 	CCScene* scene = CCScene::create();
@@ -19,7 +21,7 @@ bool GameMenu::init()
 	{
 		return false;
 	}
-
+	isGuiding = false;
 	CCSprite* menu_bg = CCSprite::create("menu_bg.png");
 	float scalY = VisibleRect::top().y/menu_bg->getContentSize().height;
 	menu_bg->setScaleY(scalY);
@@ -37,13 +39,13 @@ bool GameMenu::init()
 	CCSprite* startNormal = CCSprite::create("start_button.png");
 	CCSprite* startSelected = CCSprite::create("start_button.png");
 	startNormal->setPosition(ccp(startNormal->getContentSize().width*0.1, startNormal->getContentSize().height*0.1));
-	startSelected->setScale(1.2);
+	startSelected->setScale(1.2f);
 	menuStart = CCMenuItemSprite::create(startNormal, startSelected, this, menu_selector(GameMenu::menuStartCallback));
 
 	CCSprite* phNormal = CCSprite::create("paiming.png");
 	CCSprite* phSelected = CCSprite::create("paiming.png");
 	phNormal->setPosition(ccp(phNormal->getContentSize().width*0.1, phNormal->getContentSize().height*0.1));
-	phSelected->setScale(1.2);
+	phSelected->setScale(1.2f);
 	menuPH = CCMenuItemSprite::create(phNormal, phSelected, this, menu_selector(GameMenu::menuPaiHangCallback));
 
 	CCMenu* menu = CCMenu::create(menuStart, menuPH, NULL);
@@ -66,9 +68,9 @@ void GameMenu::onEnterTransitionDidFinish()
 	menuStart->setVisible(true);
 	menuPH->setVisible(true);
 	CCScaleTo* scale = CCScaleTo::create(2.0f, 1.0);
-	CCActionInterval* scale_out = CCEaseElasticOut::create(((CCActionInterval*)scale->copy()->autorelease()), 0.4);
-	CCActionInterval* scale_out1 = CCEaseElasticOut::create(((CCActionInterval*)scale->copy()->autorelease()), 0.3);
-	CCActionInterval* scale_out2 = CCEaseElasticOut::create(((CCActionInterval*)scale->copy()->autorelease()), 0.3);
+	CCActionInterval* scale_out = CCEaseElasticOut::create(((CCActionInterval*)scale->copy()->autorelease()), 0.4f);
+	CCActionInterval* scale_out1 = CCEaseElasticOut::create(((CCActionInterval*)scale->copy()->autorelease()), 0.3f);
+	CCActionInterval* scale_out2 = CCEaseElasticOut::create(((CCActionInterval*)scale->copy()->autorelease()), 0.3f);
 	CCDelayTime *delay = CCDelayTime::create(0.2f);
 	CCDelayTime *delay2 = CCDelayTime::create(0.4f);
 
@@ -89,12 +91,61 @@ void GameMenu::keyBackClicked()
 
 void GameMenu::menuStartCallback(CCObject* pSender)
 {
-	CCScene* scene = GameLayer::createScene();
-	CCTransitionScene* tScene = CCTransitionTurnOffTiles::create(0.5f, scene);
-	CCDirector::sharedDirector()->replaceScene(tScene);
+	if(isGuiding)
+	{
+		return;
+	}
+
+	if(userDefault->getBoolForKey(GUIDE_KEY, false))
+	{
+		CCScene* scene = GameLayer::createScene();
+		CCTransitionScene* tScene = CCTransitionTurnOffTiles::create(0.5f, scene);
+		CCDirector::sharedDirector()->replaceScene(tScene);
+	}else
+	{
+		enterGuide();
+	}
 	
 }
 
 void GameMenu::menuPaiHangCallback(CCObject* pSender)
 {
+}
+
+void GameMenu::enterGuide()
+{
+	isGuiding = true;
+	CCSprite* guide_bg = CCSprite::create("guide_bg.png");
+	float scaleY = VisibleRect::top().y/guide_bg->getContentSize().height;
+	guide_bg->setScaleY(scaleY);
+	guide_bg->setPosition(VisibleRect::center());
+
+	CCSprite* guide = CCSprite::create("guide.png");
+	guide->setPosition(ccp(VisibleRect::center().x, guide_bg->getContentSize().height/2));
+	guide_bg->addChild(guide);
+
+	CCSprite* skip_n = CCSprite::create("guide_skip.png");
+	CCSprite* skip_s = CCSprite::create("guide_skip.png");
+	skip_n->setPosition(ccp(skip_n->getContentSize().width*0.1, skip_n->getContentSize().height*0.1));
+	skip_s->setScale(1.2f);
+	CCMenuItemSprite* skipItem = CCMenuItemSprite::create(skip_n, skip_s, this, menu_selector(GameMenu::skipCallback));
+	CCMenu* menu = CCMenu::create(skipItem, NULL);
+	menu->setPosition(CCPointZero);
+	skipItem->setAnchorPoint(ccp(0.5,0.5));
+	skipItem->setPosition(ccp(278, 60));
+	guide->addChild(menu);
+	guide->setCascadeOpacityEnabled(true);
+
+	this->addChild(guide_bg);
+	CCFadeIn* fadein = CCFadeIn::create(0.5);
+	guide_bg->setCascadeOpacityEnabled(true);
+	guide_bg->runAction(fadein);
+}
+
+void GameMenu::skipCallback(CCObject* pSender)
+{
+	userDefault->setBoolForKey(GUIDE_KEY, true);
+	CCScene* scene = GameLayer::createScene();
+	CCTransitionScene* tScene = CCTransitionTurnOffTiles::create(0.5f, scene);
+	CCDirector::sharedDirector()->replaceScene(tScene);
 }

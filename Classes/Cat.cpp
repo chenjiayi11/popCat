@@ -133,8 +133,8 @@ void Cat::effectDisplay(int n)
 	CCNode* node = this->getParent()->getParent();
 	node->addChild(esp);
 
-	CCMoveBy* move = CCMoveBy::create(0.6f, ccp(0, 20));
-	CCFadeTo* fadeTo = CCFadeTo::create(0.6f, 88);
+	CCMoveBy* move = CCMoveBy::create(0.8f, ccp(0, 20));
+	CCFadeTo* fadeTo = CCFadeTo::create(0.8f, 88);
 	CCSpawn* spawn = CCSpawn::createWithTwoActions(move, fadeTo);
 	CCFiniteTimeAction* effectFinished = CCCallFuncN::create(this, callfuncN_selector(Cat::effectDisplayFinished));
 

@@ -24,7 +24,7 @@ static int result_score;
 static ccColor4F p_colors[5] = {ccc4f(236/255.f,105/255.f,136/255.f,1.0), ccc4f(68/255.f,201/255.f,220/255.f,1.0),
 								ccc4f(55/255.f,209/255.f,101/255.f,1.0), ccc4f(157/255.f,108/255.f,209/255.f,1.0),
 								ccc4f(206/255.f,205/255.f,77/255.f,1.0)};
-static float explosion_interval = 0.1;
+static float explosion_interval = 0.1f;
 
 #if (TARGET_DESIGN_RESOLUTION_SIZE == DESIGN_RESOLUTION_320x480)
 static CCSize designResolutionSize = CCSizeMake(320, 480);

@@ -19,11 +19,16 @@ public:
 
 	void menuPaiHangCallback(CCObject* pSender);
 
+	void enterGuide();
+
+	void skipCallback(CCObject* pSender);
+
 	CREATE_FUNC(GameMenu);
 
 private:
 	CCSprite* topSprite;
 	CCMenuItemSprite* menuStart;
 	CCMenuItemSprite* menuPH;
+	bool isGuiding;
 };
 #endif

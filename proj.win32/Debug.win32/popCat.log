@@ -1,41 +1,8 @@
-﻿Build started 2014/2/27 16:21:03.
+﻿Build started 2014/3/4 11:27:20.
      1>Project "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\popCat.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         D:\programfile\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\include" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\kazmath\include" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\platform\win32" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\platform\third_party\win32" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\platform\third_party\win32\OGLES" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\external" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\external\chipmunk\include\chipmunk" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\CocosDenshion\include" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\extensions" /I..\Classes /I.. /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USE_MATH_DEFINES /D GL_GLEXT_PROTOTYPES /D CC_ENABLE_CHIPMUNK_INTEGRATION=1 /D COCOS2D_DEBUG=1 /D _CRT_SECURE_NO_WARNINGS /D _SCL_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug.win32\\" /Fd"Debug.win32\vc110.pdb" /Gd /TP /wd4267 /wd4251 /wd4244 /analyze- /errorReport:prompt ..\Classes\GameScene.cpp
-         GameScene.cpp
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.h : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(101): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(171): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(310): warning C4018: '>=' : signed/unsigned mismatch
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(357): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(416): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(424): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(432): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(440): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(466): warning C4333: '>>' : right shift by too large amount, data loss
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(524): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(533): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(563): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(581): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(885): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(886): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(905): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(911): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(926): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(927): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(1030): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(1031): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(1038): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(1048): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(1049): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(1063): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(1068): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(1074): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(1086): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(1087): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(1088): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(1089): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>d:\cocos2dx\cocos2d-x\projects\popcat\classes\gamescene.cpp(1107): warning C4305: 'argument' : truncation from 'double' to 'float'
+         D:\programfile\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\include" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\kazmath\include" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\platform\win32" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\platform\third_party\win32" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\cocos2dx\platform\third_party\win32\OGLES" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\external" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\external\chipmunk\include\chipmunk" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\CocosDenshion\include" /I"D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\..\..\..\extensions" /I..\Classes /I.. /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USE_MATH_DEFINES /D GL_GLEXT_PROTOTYPES /D CC_ENABLE_CHIPMUNK_INTEGRATION=1 /D COCOS2D_DEBUG=1 /D _CRT_SECURE_NO_WARNINGS /D _SCL_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug.win32\\" /Fd"Debug.win32\vc110.pdb" /Gd /TP /wd4267 /wd4251 /wd4244 /analyze- /errorReport:prompt ..\Classes\Cat.cpp
+         Cat.cpp
      1>cl : Command line warning D9028: minimal rebuild failure, reverting to normal build
        PreLinkEvent:
          if not exist "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\" mkdir "D:\cocos2dx\cocos2d-x\projects\popCat\proj.win32\Debug.win32\"
@@ -59,4 +26,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.54
+Time Elapsed 00:00:03.61

@@ -239,7 +239,7 @@ void GameLayer::initLevelState()
 
 
 	CCDelayTime *delay_03 = CCDelayTime::create(0.3f);
-	CCDelayTime *delay = CCDelayTime::create(2.0f);
+	CCDelayTime *delay = CCDelayTime::create(1.5f);
 	
 	CCSequence* sq = CCSequence::create(delay_03, moveIn, delay, moveOut, CCCallFunc::create(this, callfunc_selector(GameLayer::initData)), NULL);
 	CCSequence* sq2 = CCSequence::create(fadeIn, CCCA(delay), CCCA(delay_03), fadeOut, NULL);
@@ -249,7 +249,7 @@ void GameLayer::initLevelState()
 	s_bg->setOpacity(0);
 	s_bg->runAction(sq2);
 
-	this->schedule(schedule_selector(GameLayer::initFinished), 4.5f);
+	this->schedule(schedule_selector(GameLayer::initFinished), 4.0f);
 }
 
 void GameLayer::initData()

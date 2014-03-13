@@ -208,7 +208,8 @@ obj/local/armeabi/objs/popCat_shared/__/__/Classes/MenuScene.o: \
  jni/../../Classes/VisibleRect.h jni/../../Classes/GameScene.h \
  jni/../../Classes/Cat.h \
  /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../CocosDenshion/android/../include/SimpleAudioEngine.h \
- /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../CocosDenshion/android/../include/Export.h
+ /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../CocosDenshion/android/../include/Export.h \
+ jni/../../Classes/AppMacros.h
 
 jni/../../Classes/MenuScene.h:
 
@@ -631,3 +632,5 @@ jni/../../Classes/Cat.h:
 /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../CocosDenshion/android/../include/SimpleAudioEngine.h:
 
 /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../CocosDenshion/android/../include/Export.h:
+
+jni/../../Classes/AppMacros.h:

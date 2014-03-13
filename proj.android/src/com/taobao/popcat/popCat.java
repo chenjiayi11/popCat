@@ -33,7 +33,6 @@ import com.laiwang.opensdk.exception.ServiceException;
 import com.laiwang.opensdk.model.GameRank;
 import com.laiwang.opensdk.model.Rank;
 import com.laiwang.opensdk.model.RankList;
-import com.laiwang.opensdk.model.UserGameInfo;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,15 +43,26 @@ import android.widget.Toast;
 public class popCat extends Cocos2dxActivity implements Callback{
 	private static LWOpenApi mLWOpenApi;
 	private static Handler handler;
+	private static boolean hasStart = false;
+	
+	private static final int SCORE_LIST = 10;
 	
     protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);	
 		mLWOpenApi = LWOpenApi.instance();
 		handler = new Handler(this);
-		startGame();
 	}
 
-    public Cocos2dxGLSurfaceView onCreateView() {
+    @Override
+	protected void onResume() {
+		super.onResume();
+		if(!hasStart){
+			startGame();
+		}
+		
+	}
+
+	public Cocos2dxGLSurfaceView onCreateView() {
     	Cocos2dxGLSurfaceView glSurfaceView = new Cocos2dxGLSurfaceView(this);
     	// popCat should create stencil buffer
     	glSurfaceView.setEGLConfigChooser(5, 6, 5, 0, 16, 8);
@@ -71,6 +81,7 @@ public class popCat extends Cocos2dxActivity implements Callback{
             public void run() {
     			try {
     				boolean result = mLWOpenApi.getGameService().startGame();
+    				message.what = 0;
     				message.obj = result;
 				} catch (ServiceException e) {
 					e.printStackTrace();
@@ -79,6 +90,7 @@ public class popCat extends Cocos2dxActivity implements Callback{
     			handler.sendMessage(message);
     		}
     	}.start();
+    	hasStart = true;
     }
     
     public static void commitGameScore(final int score){
@@ -107,24 +119,48 @@ public class popCat extends Cocos2dxActivity implements Callback{
     	}.start();
     }
     
-    public static Object[] getScoreList(){
-    	RankList rankList = null;
-    	try {
-    		rankList = mLWOpenApi.getGameService().requestRankList("score", Rank.RollUps.MAX_THIS_WEEK, 0, 50);
-        } catch (ServiceException e) {
-            e.printStackTrace();
-        }
-    	if(rankList == null)
-    		return null;
-    	return rankList.getTop().toArray();
+    public static void getScoreList(){
+    	final Message message = handler.obtainMessage();
+    	new Thread(){
+    		@Override
+			public void run() {
+    	    	try {
+    	    		RankList rankList = mLWOpenApi.getGameService().requestRankList("score", Rank.RollUps.MAX_THIS_WEEK, 0, 50);
+    	    		message.obj = rankList;
+    	    		message.what = SCORE_LIST;
+    	        } catch (ServiceException e) {
+    	            e.printStackTrace();
+    	            message.obj = e;
+    	        }
+    	    	handler.sendMessage(message);
+    		}
+    	}.start();
+    	
     }
 
 	@Override
 	public boolean handleMessage(Message msg) {
-		if(msg != null && msg.obj != null){
-			Toast.makeText(this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+		switch (msg.what) {
+		case 0:
+			if(msg != null && msg.obj != null){
+				Toast.makeText(this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+			}
+			break;
+			
+		case SCORE_LIST:
+			if(msg.obj != null){
+				final RankList rankList = (RankList) msg.obj;
+				runOnGLThread(new Runnable() {
+					@Override
+					public void run() {
+						ShowScoreList(rankList.getTop().toArray());
+					}
+				});
+			}
+			break;
 		}
-		
 		return false;
 	}     
+	
+	public native void ShowScoreList(Object[] array);
 }

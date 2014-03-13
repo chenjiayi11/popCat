@@ -21,8 +21,6 @@ public:
 
 	void menuPaiHangCallback(CCObject* pSender);
 
-	void showList();
-
 	void enterGuide();
 
 	void skipCallback(CCObject* pSender);
@@ -30,9 +28,8 @@ public:
 	CREATE_FUNC(GameMenu);
 
 	#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-		jobjectArray m_objArray;
+		void showList(JNIEnv* env, jobjectArray array);
 	#endif
-
 private:
 	CCSprite* topSprite;
 	CCMenuItemSprite* menuStart;

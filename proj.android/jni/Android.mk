@@ -11,7 +11,8 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
                    ../../Classes/Cat.cpp \
                    ../../Classes/GameScene.cpp \
                    ../../Classes/MenuScene.cpp \
-                   ../../Classes/VisibleRect.cpp
+                   ../../Classes/VisibleRect.cpp \
+                   ../../Classes/popCat.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../Classes
 

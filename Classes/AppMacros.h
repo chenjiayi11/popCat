@@ -2,6 +2,7 @@
 #define __APPMACROS_H__
 
 #include "cocos2d.h"
+#include "MenuScene.h"
 
 USING_NS_CC;
 
@@ -35,5 +36,7 @@ static CCSize designResolutionSize = CCSizeMake(640, 960);
 static float catSize = 80;
 static int boxSize = 8;
 #endif
+
+extern GameMenu* menuInstance;
 
 #endif

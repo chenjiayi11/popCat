@@ -1,9 +1,10 @@
 #include "MenuScene.h"
 #include "VisibleRect.h"
 #include "GameScene.h"
+#include "AppMacros.h"
 
 #define GUIDE_KEY "has_guide"
-
+GameMenu* menuInstance = 0;
 CCScene* GameMenu::createScene()
 {
 	CCScene* scene = CCScene::create();
@@ -11,6 +12,10 @@ CCScene* GameMenu::createScene()
 	GameMenu* layer = GameMenu::create();
 
 	scene->addChild(layer);
+
+	#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	menuInstance = layer;
+	#endif
 
 	return scene;
 }
@@ -111,24 +116,26 @@ void GameMenu::menuStartCallback(CCObject* pSender)
 
 void GameMenu::menuPaiHangCallback(CCObject* pSender)
 {
-	showList();
-}
-
-void GameMenu::showList()
-{
 	#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 	JniMethodInfo minfo;
-	bool isHave = JniHelper::getStaticMethodInfo(minfo, "com/taobao/popcat/popCat", "getScoreList", "()[Ljava/lang/Object;");
+	bool isHave = JniHelper::getStaticMethodInfo(minfo, "com/taobao/popcat/popCat", "getScoreList", "()V");
 	if(isHave)
 	{
-		m_objArray = (jobjectArray)(minfo.env->CallStaticObjectMethod(minfo.classID, minfo.methodID));
-		CCLOG("showList returns from java:0x%x", m_objArray);
+		minfo.env->CallStaticObjectMethod(minfo.classID, minfo.methodID);
+		CCLOG("showList returns from java");
 	}
-	if(m_objArray != NULL)
-	{
+	#elif(CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+	#endif
+}
+
+#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+void GameMenu::showList(JNIEnv* env, jobjectArray array)
+{
 		CCLabelTTF* tempL = CCLabelTTF::create("test", "arial", 24);
 		tempL->setPosition(ccp(VisibleRect::center().x, VisibleRect::top().y - 50));
-		jobject temp_obj = minfo.env->GetObjectArrayElement(m_objArray, 0);
+		jobject temp_obj = env->GetObjectArrayElement(array, 0);
+		JniMethodInfo minfo;
+		bool isHave;
 		isHave = JniHelper::getMethodInfo(minfo, "com/laiwang/opensdk/model/UserGameInfo", "getValue", "()I");
 		jint value = minfo.env->CallIntMethod(temp_obj, minfo.methodID);
 		CCLOG("showList returns from java :%d", value);
@@ -138,10 +145,9 @@ void GameMenu::showList()
 		CCLOG("showList returns from java :%s", namec);
 		tempL->setString(namec);
 		this->addChild(tempL);
-	}
-	#elif(CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	#endif
+	
 }
+#endif
 
 void GameMenu::enterGuide()
 {

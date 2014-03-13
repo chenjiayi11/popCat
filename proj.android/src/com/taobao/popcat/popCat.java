@@ -23,15 +23,33 @@ THE SOFTWARE.
 ****************************************************************************/
 package com.taobao.popcat;
 
+import java.util.ArrayList;
+
 import org.cocos2dx.lib.Cocos2dxActivity;
 import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
 
-import android.os.Bundle;
+import com.laiwang.opensdk.LWOpenApi;
+import com.laiwang.opensdk.exception.ServiceException;
+import com.laiwang.opensdk.model.GameRank;
+import com.laiwang.opensdk.model.Rank;
+import com.laiwang.opensdk.model.RankList;
+import com.laiwang.opensdk.model.UserGameInfo;
 
-public class popCat extends Cocos2dxActivity{
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Handler.Callback;
+import android.os.Message;
+import android.widget.Toast;
+
+public class popCat extends Cocos2dxActivity implements Callback{
+	private static LWOpenApi mLWOpenApi;
+	private static Handler handler;
 	
     protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);	
+		mLWOpenApi = LWOpenApi.instance();
+		handler = new Handler(this);
+		startGame();
 	}
 
     public Cocos2dxGLSurfaceView onCreateView() {
@@ -44,5 +62,69 @@ public class popCat extends Cocos2dxActivity{
     
 	static {
         System.loadLibrary("popCat");
-    }     
+    }
+    
+    public static void startGame(){
+    	final Message message = handler.obtainMessage();
+    	new Thread(){
+    		@Override
+            public void run() {
+    			try {
+    				boolean result = mLWOpenApi.getGameService().startGame();
+    				message.obj = result;
+				} catch (ServiceException e) {
+					e.printStackTrace();
+					message.obj = e.toString();
+				}
+    			handler.sendMessage(message);
+    		}
+    	}.start();
+    }
+    
+    public static void commitGameScore(final int score){
+    	final Message message = handler.obtainMessage();
+    	new Thread(){
+    		@Override
+			public void run() {
+				Rank rank = new Rank();
+				rank.setKey("score");
+				rank.setValue(score);
+				ArrayList<String> list = new ArrayList<String>();
+				list.add(Rank.RollUps.MAX_THIS_WEEK.getValue());
+				rank.setRollUps(list);
+				ArrayList<Rank> ranks = new ArrayList<Rank>();
+				ranks.add(rank);
+				String userDate="score";
+				try {
+					GameRank gameRank = mLWOpenApi.getGameService().upLoadValue(ranks, userDate);
+                    message.obj = gameRank;
+				} catch (Exception e) {
+					 e.printStackTrace();
+                     message.obj = e;
+				}
+				handler.sendMessage(message);
+			}
+    	}.start();
+    }
+    
+    public static Object[] getScoreList(){
+    	RankList rankList = null;
+    	try {
+    		rankList = mLWOpenApi.getGameService().requestRankList("score", Rank.RollUps.MAX_THIS_WEEK, 0, 50);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+    	if(rankList == null)
+    		return null;
+    	return rankList.getTop().toArray();
+    }
+
+	@Override
+	public boolean handleMessage(Message msg) {
+		if(msg != null && msg.obj != null){
+			Toast.makeText(this, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+		}
+		
+		return false;
+	}     
 }

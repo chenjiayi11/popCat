@@ -1,7 +1,9 @@
 #ifndef __MENUSCENE_H_
 #define __MENUSCENE_H_
 #include "cocos2d.h"
-
+#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#include "platform\android\jni\JniHelper.h"
+#endif
 USING_NS_CC;
 
 class GameMenu : public CCLayer
@@ -19,16 +21,23 @@ public:
 
 	void menuPaiHangCallback(CCObject* pSender);
 
+	void showList();
+
 	void enterGuide();
 
 	void skipCallback(CCObject* pSender);
 
 	CREATE_FUNC(GameMenu);
 
+	#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+		jobjectArray m_objArray;
+	#endif
+
 private:
 	CCSprite* topSprite;
 	CCMenuItemSprite* menuStart;
 	CCMenuItemSprite* menuPH;
 	bool isGuiding;
+
 };
 #endif

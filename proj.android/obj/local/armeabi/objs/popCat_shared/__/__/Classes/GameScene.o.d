@@ -207,7 +207,9 @@ obj/local/armeabi/objs/popCat_shared/__/__/Classes/GameScene.o: \
  /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../CocosDenshion/android/../include/SimpleAudioEngine.h \
  /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../CocosDenshion/android/../include/Export.h \
  jni/../../Classes/VisibleRect.h jni/../../Classes/AppMacros.h \
- jni/../../Classes/MenuScene.h
+ jni/../../Classes/MenuScene.h \
+ /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../cocos2dx/platform\android\jni\JniHelper.h \
+ /cygdrive/d/programfile/android-ndk-r9b/platforms/android-9/arch-arm/usr/include/jni.h
 
 jni/../../Classes/GameScene.h:
 
@@ -628,3 +630,7 @@ jni/../../Classes/VisibleRect.h:
 jni/../../Classes/AppMacros.h:
 
 jni/../../Classes/MenuScene.h:
+
+/cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../cocos2dx/platform\android\jni\JniHelper.h:
+
+/cygdrive/d/programfile/android-ndk-r9b/platforms/android-9/arch-arm/usr/include/jni.h:

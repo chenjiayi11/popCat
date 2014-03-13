@@ -8,18 +8,50 @@
     <uses-feature android:glEsVersion="0x00020000" />
 
     <application android:label="@string/app_name"
+        android:name="com.taobao.popcat.LWApp"
+        android:allowBackup="true"
         android:icon="@drawable/icon">
 
-        <activity android:name=".popCat"
-                  android:label="@string/app_name"
-                  android:screenOrientation="portrait"
-                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-                  android:configChanges="orientation">
+        <activity 
+            android:name=".loginActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".popCat"
+                  android:label="@string/app_name"
+                  android:screenOrientation="portrait"
+                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+                  android:configChanges="orientation">
+            
+        </activity>
+        
+        <receiver
+        android:name="com.ut.device.BQueryWhoHasOne"
+        android:exported="true"
+        android:permission="com.ut.permission.DEVICE_STATE" >
+        <intent-filter>
+            <action android:name="UT.QueryWhoHasOne" />
+        </intent-filter>
+    	</receiver>
+		<receiver
+		    android:name="com.ut.device.BFoundIt"
+		    android:exported="true"
+		    android:permission="com.ut.permission.DEVICE_STATE" >
+		    <intent-filter>
+		        <action android:name="UT.FoundIT" />
+		    </intent-filter>
+		</receiver>
+
+		<!-- 数据上传服务 -->
+		<service
+		    android:name="com.taobao.statistic.module.data.Yolanda"
+		    android:process=":utremote" >
+		</service>
     </application>
     <supports-screens android:largeScreens="true"
                       android:smallScreens="true"
@@ -27,4 +59,11 @@
                       android:normalScreens="true"/>
                          
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <permission android:name="com.ut.permission.DEVICE_STATE" />
+	<uses-permission android:name="com.ut.permission.DEVICE_STATE" />
+	
 </manifest> 

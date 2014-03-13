@@ -3,6 +3,10 @@
 #include "AppMacros.h"
 #include "MenuScene.h"
 
+#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#include "platform\android\jni\JniHelper.h"
+#endif
+
 using namespace std;
 
 enum{
@@ -20,7 +24,7 @@ CCScene* GameLayer::createScene()
 
 	scene->addChild(layer);
 
-	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("selected.wav");
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->preloadEffect("selected.mp3");
 
 	return scene;
 }
@@ -178,7 +182,7 @@ bool GameLayer::init()
 	topNode->addChild(pMenu);
 
 	topNode->setVisible(false);
-	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("Cat_BGM_Sketch_2.mp3", true);
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("Cat_BGM.mp3", true);
 	return true;
 }
 
@@ -370,7 +374,7 @@ void GameLayer::ccTouchesBegan(CCSet *pTouches, CCEvent *pEvent)
 				}
 
 				//选中音效
-				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("selected.wav");
+				CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect("selected.mp3");
 				int n = m_selected->count();
 				char string[50] = {0};
 				sprintf(string, "%d cats %d points", n, getScoreByNum(n));
@@ -786,7 +790,17 @@ void GameLayer::gameEndCallback()
 		result_score = currentScore;
 		currentScore = 0;
 		justScore = 0;
-		//result_label->setString("game over");
+		//提交分数
+		#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+			JniMethodInfo minfo;
+			bool isHave = JniHelper::getStaticMethodInfo(minfo, "com/taobao/popcat/popCat", "commitGameScore", "(I)V");
+			if(isHave)
+			{
+				minfo.env->CallStaticVoidMethod(minfo.classID, minfo.methodID, result_score);
+			}
+		#elif(CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+			//TODO
+		#endif
 	}
 
 	if(level > 1)

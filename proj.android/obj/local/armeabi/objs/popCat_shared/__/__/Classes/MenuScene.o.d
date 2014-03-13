@@ -203,6 +203,8 @@ obj/local/armeabi/objs/popCat_shared/__/__/Classes/MenuScene.o: \
  /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../cocos2dx/support/data_support/uthash.h \
  /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../cocos2dx/support/component/CCComponent.h \
  /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../cocos2dx/support/component/CCComponentContainer.h \
+ /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../cocos2dx/platform\android\jni\JniHelper.h \
+ /cygdrive/d/programfile/android-ndk-r9b/platforms/android-9/arch-arm/usr/include/jni.h \
  jni/../../Classes/VisibleRect.h jni/../../Classes/GameScene.h \
  jni/../../Classes/Cat.h \
  /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../CocosDenshion/android/../include/SimpleAudioEngine.h \
@@ -615,6 +617,10 @@ jni/../../Classes/MenuScene.h:
 /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../cocos2dx/support/component/CCComponent.h:
 
 /cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../cocos2dx/support/component/CCComponentContainer.h:
+
+/cygdrive/d/cocos2dx/cocos2d-x/projects/popCat/proj.android/../../../cocos2dx/platform\android\jni\JniHelper.h:
+
+/cygdrive/d/programfile/android-ndk-r9b/platforms/android-9/arch-arm/usr/include/jni.h:
 
 jni/../../Classes/VisibleRect.h:
 

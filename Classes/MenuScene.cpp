@@ -59,6 +59,7 @@ bool GameMenu::init()
 
 	this->addChild(menu);
 	this->setKeypadEnabled(true);
+
 	return true;
 }
 
@@ -110,6 +111,36 @@ void GameMenu::menuStartCallback(CCObject* pSender)
 
 void GameMenu::menuPaiHangCallback(CCObject* pSender)
 {
+	showList();
+}
+
+void GameMenu::showList()
+{
+	#if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	JniMethodInfo minfo;
+	bool isHave = JniHelper::getStaticMethodInfo(minfo, "com/taobao/popcat/popCat", "getScoreList", "()[Ljava/lang/Object;");
+	if(isHave)
+	{
+		m_objArray = (jobjectArray)(minfo.env->CallStaticObjectMethod(minfo.classID, minfo.methodID));
+		CCLOG("showList returns from java:0x%x", m_objArray);
+	}
+	if(m_objArray != NULL)
+	{
+		CCLabelTTF* tempL = CCLabelTTF::create("test", "arial", 24);
+		tempL->setPosition(ccp(VisibleRect::center().x, VisibleRect::top().y - 50));
+		jobject temp_obj = minfo.env->GetObjectArrayElement(m_objArray, 0);
+		isHave = JniHelper::getMethodInfo(minfo, "com/laiwang/opensdk/model/UserGameInfo", "getValue", "()I");
+		jint value = minfo.env->CallIntMethod(temp_obj, minfo.methodID);
+		CCLOG("showList returns from java :%d", value);
+		isHave = JniHelper::getMethodInfo(minfo, "com/laiwang/opensdk/model/UserGameInfo", "getName", "()Ljava/lang/String;");
+		jstring name = (jstring)(minfo.env->CallObjectMethod(temp_obj, minfo.methodID));
+		char* namec = (char*)(minfo.env->GetStringUTFChars(name,0));
+		CCLOG("showList returns from java :%s", namec);
+		tempL->setString(namec);
+		this->addChild(tempL);
+	}
+	#elif(CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+	#endif
 }
 
 void GameMenu::enterGuide()
